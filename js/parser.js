@@ -4,13 +4,13 @@
 
 
 Parser = function(){
-    var url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?all:all:all:mobile:all";
+    var url = "ajax.php";
 
     $.ajax({
             url: url,
             crossDomain: true
-    }).done(function (){
-        alert(data)
+    }).done(function (data){
+        $('body').append(data);
     })
 
 }

@@ -22,8 +22,9 @@ class Loader {
                         }
 
                         $block_counter++;
-                        echo "<div class='block'>";
-                        echo  "<h1 class='year'>" . strip_tags($val) . "</h1>";
+                        $val = strip_tags($val);
+                        echo "<div data-name='$val' class='block'>";
+                        echo  "<h1 class='year'>" . $val . "</h1>";
 
                     } elseif (strpos($val, "<td>") !== false) {
                         echo $val;
