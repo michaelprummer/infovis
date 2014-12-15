@@ -4,9 +4,12 @@ class Loader {
 
     function Loader (){
         //$this->options = $options;
-        $url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?all:all:all:mobile:all";
-        $block_counter = 0;
+        $this->parsePubDB();
+    }
 
+    function parsePubDB(){
+        $url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?all:all:all:all:all";
+        $block_counter = 0;
         if (false !== ($this->result = @file_get_contents($url))) {
             $this->result = str_replace("</tr>", "", $this->result);
             $this->result = explode("<tr>", $this->result);
@@ -32,20 +35,26 @@ class Loader {
 
                     for ($k=0; $k<count($val); $k++) {
                         if($k == 2) {
-                            echo "<div class='ele-autoren'>" . $val[$k] . "</div>";
+                            echo "<ul class='authors'>";
+                            $authors = explode(",", $val[$k]);
+                            for($i2=0;$i2<count($authors);$i2++){
+                                $author = $authors[$i2];
+                                echo "<li>" . $author . "</li>";
 
+                            }
+                            echo "</ul>";
                         } elseif ($k == 4) {
-                            echo "<div class='ele-title'>" . strip_tags($val[$k], "<a>") . "</div>";
+                            echo "<div class='title'>" . strip_tags($val[$k], "<a>") . "</div>";
 
                         } elseif ($k == 6) {
-                            echo "<div class='ele-details'>" . strip_tags($val[$k]) . "</div>";
+                            echo "<div class='details'>" . strip_tags($val[$k]) . "</div>";
 
                         } elseif ($k == 7) {
                             preg_match('/<a href="(.+)">/', $val[$k], $match);
                             if(count($match) > 0)
-                                echo "<div class='ele-bib-link'>" . $match[1] . "</div>";
+                                echo "<div class='bib-link'>" . $match[1] . "</div>";
                             else
-                                echo "<div class='ele-bib-link'></div>";
+                                echo "<div class='bib-link'></div>";
                         }
 
                     }
@@ -64,7 +73,9 @@ class Loader {
         }
 
         //var_dump($this->result);
+
     }
+
 }
 
 
