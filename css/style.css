@@ -4,5 +4,12 @@
 
 .block {
     margin: 1em 0;
+    padding: 1em;
     background: #eee;
+}
+
+.element {
+    padding: 1em;
+    margin: 1em;
+    background: #cccccc;
 }

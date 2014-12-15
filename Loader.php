@@ -16,10 +16,8 @@ class Loader {
                 $val = $this->result[$i];
 
                     if (strpos($val, "year_separator") !== false) {
-
-                        if($block_counter > 0){
+                        if($block_counter > 0)
                             echo "</div>";
-                        }
 
                         $block_counter++;
                         $val = strip_tags($val);
@@ -27,10 +25,11 @@ class Loader {
                         echo  "<h1 class='year'>" . $val . "</h1>";
 
                     } elseif (strpos($val, "<td>") !== false) {
-                        echo $val;
+                        echo "<div class='element'>" . $val . "</div>";
                     }
             }
 
+            // Close year block
             if(count($this->result) > 0) {
                 echo "</div>";
             }
