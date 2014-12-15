@@ -3,12 +3,19 @@
  */
 
 
-Parser = function(){
+Parser = function($param){
     var url = "ajax.php";
 
     $.ajax({
-            url: url,
-            crossDomain: true
+        url: url,
+        type: 'post',
+        data: {
+            "param0": $param[0],
+            "param1": $param[1],
+            "param2": $param[2],
+            "param3": $param[3],
+            "param4": $param[4]
+        }
     }).done(function (data){
         $('body').append(data);
     })
