@@ -22,11 +22,18 @@
     function callApi(options){
         //options = {name: ,year: ,group: ,project: ,medium: }
         url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?"+options['name']+":"+options['year']+":"+options['group']+":"+options['project']+":"+options['medium'];
-        updateLocalData()
+        $.ajax(url,{
+           success: manageApiResult;
+        });
+    }
+    function manageApiResult(data,status,xhr){
+        var data = {authors: {}, papers:{}, media:{}};
+        updateLocalData(data);
     }
     function updateLocalData(data){
         // cache api call result
         // data parameter can look like localdata {authors: {}, papers:{}, media:{}}
+        // check for every entry if it already exists in localdata and updates it otherwise create entries.
     }
 	
 </script>
