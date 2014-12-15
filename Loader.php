@@ -12,15 +12,14 @@ class Loader {
             if (isset($_POST['param' . $i])) {
                 if($i!=0)
                     $options = $options . ":";
-                $options = $options . $_POST['param'.$i];
+                $options = $options . strtolower($_POST['param'.$i]);
             } else {
                 $options = $options . ":all";
             }
         }
-
-        $url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?" . $options;
         $block_counter = 0;
-        if (false !== ($this->result = @file_get_contents($url))) {
+        $url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?" . $options;
+        if (false !== ($this->result = file_get_contents($url))) {
             $this->result = str_replace("</tr>", "", $this->result);
             $this->result = explode("<tr>", $this->result);
 

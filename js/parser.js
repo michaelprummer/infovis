@@ -18,12 +18,20 @@ Parser = function($param){
     Parser.prototype.callApi= function (options){
 
         //options = {name: ,year: ,group: ,project: ,medium: }
-        //url = "ajax.php?"+(options['name'] != null ? options['name'] : 'all')+":"+(options['year'] != null ? options['year'] : 'all')+":"+(options['group'] != null ? options['group'] : 'all')+":"+(options['project'] != null ? options['project'] : 'all')+":"+(options['medium'] != null ? options['medium'] : 'all');
-        url = "ajax.php?"+(options['name'] != null ? options['name'] : 'all')+":"+(options['year'] != null ? options['year'] : 'all')+":"+(options['group'] != null ? options['group'] : 'all')+":"+(options['project'] != null ? options['project'] : 'all')+":"+(options['medium'] != null ? options['medium'] : 'all');
+        //url = "ajax.php?"+(options['name'] != null ? options['name'] : 'all')+":"+(options['year'] != null ? options['year'] : 'all')+":"+(options['group'] != null ? options['group'] : 'all')+":"+(options['project'] != null ? options['project'] : 'all')+      ":"+(options['medium'] != null ? options['medium'] : 'all');
+        url = "ajax.php";
         var me = this;
 
         $.ajax({
             url: url,
+            type: "post",
+            data: {
+                'param0' : options['name'],
+                'param1' : options['year'],
+                'param2' : options['group'],
+                'param3' : options['project'],
+                'param4' : options['medium']
+            },
             success: function(data,status,xhr){
                     $('body').append(data);
 
