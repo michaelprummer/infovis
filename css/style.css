@@ -13,3 +13,11 @@
     margin: 1em;
     background: #cccccc;
 }
+
+
+#ajaxloader {
+    background: url("../img/ajax-loader.gif") no-repeat #ffffff center center;
+    position: absolute;
+    width: 100%;
+    height:100%;
+}
