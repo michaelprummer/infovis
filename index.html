@@ -4,15 +4,36 @@
     <meta charset="UTF-8">
     <title></title>
 </head>
+<script type ="text/javascript" src="js/d3.v3.min.js"></script>
+<script type ="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript">
+
+    var localData = {authors: {}, papers:{}, media:{}};
+    function getAuthor(name,paper){}
+    function getAuthors(paper){}
+    function getPapers(name,conference){}
+    function getConference(paper){}
+    function getConferences(name){}
+    function callApi(options){
+        //options = {name: ,year: ,group: ,project: ,medium: }
+        url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?"+options['name']+":"+options['year']+":"+options['group']+":"+options['project']+":"+options['medium'];
+        updateLocalData()
+    }
+    function updateLocalData(data){
+        // cache api call result
+        // data parameter can look like localdata {authors: {}, papers:{}, media:{}}
+    }
+	
+</script>
 <body>
 
 needed Methods:
 
-getAuthor(name,paper){}
-getAuthors(paper){}
-getPapers(name,conference){}
-getConference(paper){}
-getConferences(name){}
+function getAuthor(name,paper){}
+function getAuthors(paper){}
+function getPapers(name,conference){}
+function getConference(paper){}
+function getConferences(name){}
 
 
 
