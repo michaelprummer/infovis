@@ -3,7 +3,6 @@ class Loader {
     var $result;
 
     function Loader (){
-        //$this->options = $options;
         $this->parsePubDB();
     }
 
@@ -50,7 +49,7 @@ class Loader {
                             $authors = explode(",", $val[$k]);
                             for($i2=0;$i2<count($authors);$i2++){
                                 $author = $authors[$i2];
-                                echo "<li>" . $author . "</li>";
+                                echo "<li>" . utf8_encode($author) . "</li>";
 
                             }
                             echo "</ul>";
