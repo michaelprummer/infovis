@@ -6,6 +6,7 @@
 </head>
 <script type ="text/javascript" src="js/d3.v3.min.js"></script>
 <script type ="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+<script type ="text/javascript" src="js/parser.js"></script>
 <script type="text/javascript">
 
     // authors can store papers:{papername: {conference, date, quotes}} with ,
@@ -22,8 +23,10 @@
     function callApi(options){
         //options = {name: ,year: ,group: ,project: ,medium: }
         url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?"+options['name']+":"+options['year']+":"+options['group']+":"+options['project']+":"+options['medium'];
-        $.ajax(url,{
-           success: manageApiResult;
+        $.ajax({
+            url: ""
+        }).done(function(){
+
         });
     }
     function manageApiResult(data,status,xhr){
@@ -35,7 +38,8 @@
         // data parameter can look like localdata {authors: {}, papers:{}, media:{}}
         // check for every entry if it already exists in localdata and updates it otherwise create entries.
     }
-	
+
+    new Parser();
 </script>
 <body>
 
