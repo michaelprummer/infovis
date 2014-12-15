@@ -13,34 +13,8 @@
     // authors can store papers:{papername: {conference, date, quotes}} with ,
     // papers can store authors[],quotes and conference{author,date}
     // conference can store date, location, and papers: paper[]
-
-    var localData = {authors: {}, papers:{}, media:{}};
-    function getAuthor(name,paper){}
-    function getAuthors(paper){}
-    function getPapers(name,conference){}
-    function getConference(paper){}
-    function getConferences(name){}
-    function filter(json,key){}
-    function callApi(options){
-        //options = {name: ,year: ,group: ,project: ,medium: }
-        url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?"+options['name']+":"+options['year']+":"+options['group']+":"+options['project']+":"+options['medium'];
-        $.ajax({
-            url: ""
-        }).done(function(){
-
-        });
-    }
-    function manageApiResult(data,status,xhr){
-        var data = {authors: {}, papers:{}, media:{}};
-        updateLocalData(data);
-    }
-    function updateLocalData(data){
-        // cache api call result
-        // data parameter can look like localdata {authors: {}, papers:{}, media:{}}
-        // check for every entry if it already exists in localdata and updates it otherwise create entries.
-    }
-    var options = new Array("all","all","all", "all", "all");
-    new Parser(options);
+    parser = new Parser();
+    console.log(parser.callApi({name:"Wiethoff"}));
 </script>
 <body>
 
