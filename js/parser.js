@@ -2,9 +2,9 @@
  * Created by mp on 15.12.2014.
  */
 
-$("body").prepend("<div id='ajaxloader'></div>");
-
 Parser = function($param){
+    var CONTENTMODE_JSON = 1;
+    var CONTENTMODE_HTML = 2;
     var url = "ajax.php";
     var isDone = false;
     var localData = {authors: {}, papers:{}, media:{}};
@@ -30,7 +30,8 @@ Parser = function($param){
                 'param1' : options['year'],
                 'param2' : options['group'],
                 'param3' : options['project'],
-                'param4' : options['medium']
+                'param4' : options['medium'],
+                'contentMode' : CONTENTMODE_JSON
             },
             success: function(data,status,xhr){
                     $('body').append(data);
