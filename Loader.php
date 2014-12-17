@@ -29,18 +29,13 @@ class Loader
         }
         // API URL
         $url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?" . $options;
-
-        if ($this->content_mode == self::CONTENTMODE_HTML) {
-            $block_counter = 0;
-        } else {
-            $json = array();
-            $query_counter = 0;
-        }
+        $query_counter = 0;
+        $block_counter = 0;
+        $json = array();
 
         if (false !== ($this->result = file_get_contents($url))) {
             $this->result = str_replace("</tr>", "", $this->result);
             $this->result = explode("<tr>", $this->result);
-
             // Iterate search results
             for ($i = 0; $i < count($this->result); $i++) {
                 $val = $this->result[$i];
@@ -161,6 +156,12 @@ class Loader
     {
         $this->content_mode = self::CONTENTMODE_HTML;
         $this->parsePubDB();
+    }
+
+    function getRAW()
+    {
+        $this->content_mode = self::CONTENTMODE_RAW;
+        return $this->parsePubDB();
     }
 
 }

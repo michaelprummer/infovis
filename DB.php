@@ -31,13 +31,10 @@ class DB {
     }
 
     function loadData(){
-        $_POST['contentMode'] = 1;
         $loader = new Loader();
+        $data = $loader->getRAW();
+        print_r($data);
 
-        print_r($loader->parsePubDB());
-
-
-        echo "Setup complete";
     }
 
 }
