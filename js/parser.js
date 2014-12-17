@@ -47,7 +47,6 @@ Parser = function($param){
               $("#"+canvasId).append(ajaxloader);
             },
             success: function(data,status,xhr){
-                console.log(data);
                 ret = data;
                 $('#ajaxloader').animate({opacity: 0}, 1000, "linear", function() {
                     $('#ajaxloader').remove()

@@ -5,11 +5,9 @@
 AuthorBubble = function(options){
     this.papers = options["papers"];
     this.authorname = options["author"]
-    this.canvas = options['canvas'];
+    this.svg = options['svg'];
     var self = this;
 
-    var w = 300;
-    var h = 300;
     this.yearLabels = [];
     this.yearPaperCount = [];
 
@@ -20,59 +18,55 @@ AuthorBubble = function(options){
             this.yearPaperCount.push(this.papers[i].elements.length);
         }
     }
-    AuthorBubble.prototype.getGraphic = function(){
-        return svg;
-    }
 
     this.countPapersFromYear();
 
     console.log("creating authorbubble with name: "+this.authorname+", papers:");
-    console.log(this.papers);
 
-    var outerRadius = w / 2;
-    var innerRadius = 100;
-    var arc = d3.svg.arc()
-        .innerRadius(innerRadius)
-        .outerRadius(outerRadius);
+    // ACTIVITY PIE
+        var monochrome = d3.scale.ordinal().range(["#01EC6A","#1DF47D","#60FDA6","#91FDC1","#CEFEE3","#F7FEFA"]);
+        var w = 300;
+        var h = 300;
+        var outerRadius = w / 2;
+        var innerRadius = 100;
+        var color= monochrome;
 
-    var pie = d3.layout.pie();
+        var arc = d3.svg.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(outerRadius);
 
-    //Easy colors accessible via a 10-step ordinal scale
-    var color = d3.scale.category10();
+        var pie = d3.layout.pie().value(function(d){return d;});
 
-    //Create SVG element
-    var svg = canvas
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h);
+        var group = this.svg.append("g").attr("transform", "translate(" + w + "," + h + ")");
 
-    //Set up groups
-    var arcs = svg.selectAll("g.arc")
-        .data(pie(dataset))
-        .enter()
-        .append("g")
-        .attr("class", "arc")
-        .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
+        //Set up groups
+        var arcs = this.svg.selectAll(".arc")
+            .data(pie(this.yearPaperCount))
+            .enter()
+            .append("g")
+            .attr("class", "arc")
+            .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
 
-    //Draw arc paths
-    arcs.append("path")
-        .attr("fill", function(d, i) {
+        console.log(arcs);
+        //Draw arc paths
+        arcs.append("path")
+            .attr("d", arc)
+            .attr("fill"    , function(d, i) {
             return color(i);
-        })
-        .attr("d", arc);
-
-    //Labels
-    arcs.append("text")
-        .attr("transform", function(d) {
-            return "translate(" + arc.centroid(d) + ")";
-        })
-        .attr("text-anchor", "middle")
-        .text(function(d) {
-            return d.value;
         });
 
+        //Labels
+        arcs.append("text")
+            .attr("transform", function(d) {
+                return "translate(" + arc.centroid(d) + ")";
+            })
+            .attr("text-anchor", "middle")
+            .text(function(d) {
+                return d.data;
+            });
 
-    return this.getGraphic();
+
+    return group;
 
 
 }
