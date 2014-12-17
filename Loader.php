@@ -1,18 +1,11 @@
 <?php
 class Loader
 {
-    var $result;
-    var $content_mode;
+    private $result;
+    private $content_mode;
     const CONTENTMODE_JSON = 1;
     const CONTENTMODE_HTML = 2;
     const CONTENTMODE_RAW = 3;
-
-    /**
-     * Constructor
-     */
-    function Loader()
-    {
-    }
 
     /**
      * Parses the search query result
@@ -36,6 +29,7 @@ class Loader
         }
         // API URL
         $url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?" . $options;
+
         if ($this->content_mode == self::CONTENTMODE_HTML) {
             $block_counter = 0;
         } else {
@@ -158,8 +152,9 @@ class Loader
     function getJson()
     {
         $this->content_mode = self::CONTENTMODE_JSON;
+        $json = $this->parsePubDB();
         header('Content-Type: application/json');
-        return json_encode($this->parsePubDB());
+        echo json_encode($json);
     }
 
     function getHTML()
