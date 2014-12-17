@@ -144,8 +144,7 @@ class Loader
         }
     }
 
-    function getJson()
-    {
+    function getJson() {
         $this->content_mode = self::CONTENTMODE_JSON;
         $json = $this->parsePubDB();
         header('Content-Type: application/json');
