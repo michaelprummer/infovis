@@ -6,7 +6,7 @@ AuthorBubble = function(options){
     this.papers = options["papers"];
     this.authorname = options["author"]
     this.svg = options['svg'];
-    var self = this;
+    var that = this;
 
     this.yearLabels = [];
     this.yearPaperCount = [];
@@ -21,10 +21,13 @@ AuthorBubble = function(options){
 
     this.countPapersFromYear();
 
-    console.log("creating authorbubble with name: "+this.authorname+", papers:");
+    console.log("creating author bubble with name: "+this.authorname);
+    this.bubble = this.svg.append("g").attr("transform", "translate(" + 0 + "," + 0 + ")").attr("class","authorBubble");
+
 
     // ACTIVITY PIE
-        var monochrome = d3.scale.ordinal().range(["#01EC6A","#1DF47D","#60FDA6","#91FDC1","#CEFEE3","#F7FEFA"]);
+    var activityPie =  this.bubble.append("g").attr("class","activityPie");
+    var monochrome = d3.scale.ordinal().range(["#01EC6A","#1DF47D","#60FDA6","#91FDC1","#CEFEE3","#F7FEFA"]);
         var w = 300;
         var h = 300;
         var outerRadius = w / 2;
@@ -37,17 +40,15 @@ AuthorBubble = function(options){
 
         var pie = d3.layout.pie().value(function(d){return d;});
 
-        var group = this.svg.append("g").attr("transform", "translate(" + w + "," + h + ")");
 
         //Set up groups
-        var arcs = this.svg.selectAll(".arc")
+        var arcs = activityPie.selectAll("g.activityArc")
             .data(pie(this.yearPaperCount))
             .enter()
             .append("g")
-            .attr("class", "arc")
+            .attr("class", "activityArc")
             .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
 
-        console.log(arcs);
         //Draw arc paths
         arcs.append("path")
             .attr("d", arc)
@@ -61,12 +62,35 @@ AuthorBubble = function(options){
                 return "translate(" + arc.centroid(d) + ")";
             })
             .attr("text-anchor", "middle")
-            .text(function(d) {
-                return d.data;
+            .text(function(d,i) {
+                return that.yearLabels[i];
             });
 
+    // AUTHOR NAME =>CLICKABLE?
+        var namebadge = this.bubble
+            .append("g")
+            .attr("class","name")
+            .on("mousedown",function(){
+                console.log("CLICKED "+that.authorname);
+            });
 
-    return group;
+        namebadge.append("circle")
+            .style("fill", "green")
+            .attr("cx",w/2)
+            .attr("cy",h/2)
+            .attr("r",innerRadius)
+            .attr("text-anchor", "middle")
+
+        namebadge.append("text")
+            .text(this.authorname)
+            .attr("text-anchor", "middle")
+            .attr("dx",w/2)
+            .attr("dy",h/2)
+            .attr("class","authorname")
+            .style("fill","#ffffff");
+
+
+    return this.bubble;
 
 
 }

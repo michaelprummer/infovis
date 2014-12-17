@@ -14,13 +14,16 @@
 <script type="text/javascript">
 
 
-    // authors can store papers:{papername: {conference, date, quotes}} with ,
-    // papers can store authors[],quotes and conference{author,date}
-    // conference can store date, location, and papers: paper[]
     $(document).ready(function(ev){
+        var width = 600;
+        var height = 800;
         var canvasId="canvas";
         var canvas = d3.select("#canvas");
-        var svgContainer = canvas.append("svg").attr("width", 600).attr("height", 600);
+        var svgContainer = canvas.append("svg")
+                .attr("width", 600)
+                .attr("height", 600);
+                //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
+                // viewbox ist awesome für navigation in unserem graphen, eingebauter zoom + bildausschnitt
 
         $("button").button();
         $('#nav').tabs();
@@ -61,7 +64,7 @@
 
         });
 
-        // ANIMATING INPUTS:
+        // SEARCH FORM ANIMATING INPUTS:
         var aniDuration = 200;
         var inputHeightExpanded = '2.7em';
         var inputHeightCollapsed = '1.5em';

@@ -73,7 +73,11 @@ input{
     color:#127817;
 
 }
+/* SVG CONTENT */
+.authorname{
+    font-family:Trebuchet MS, Helvetica, Arial, sans-serif;
 
+}
 
 /* jquery overrides */
 
