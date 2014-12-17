@@ -10,6 +10,7 @@
 <script type ="text/javascript" src="js/jquery-2.1.1.min.js"></script>
 <script type ="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type ="text/javascript" src="js/parser.js"></script>
+<script type ="text/javascript" src="js/authorbubble.js"></script>
 <script type="text/javascript">
 
     // authors can store papers:{papername: {conference, date, quotes}} with ,
@@ -18,11 +19,13 @@
     $(document).ready(function(ev){
         $("button").button();
         $('#nav').tabs();
-
+        var canvasId="canvas";
+        var canvas = d3.select("canvas");
+        var svgContainer = canvas.append("svg").attr("width", 600).attr("height", 600);
 
         var parser = new Parser();
 
-        $("#searchButton,#searchAuthor").click(function(ev){
+        $("#searchAuthor").click(function(ev){
             ev.preventDefault();
             options = {};
             options["name"] = $('#name').val();
@@ -30,7 +33,26 @@
             options["conference"] = $('#conference').val();
             options["paper"] = $('#paper').val();
 
-            parser.callApi(options);
+            apiCallresult = parser.callApi(options);
+
+            if(options['name'] != null){
+                var author = options['name'];
+                var re = new RegExp(".*"+author+"$");
+                var realAuthorname = "";
+                if(apiCallresult.length >0){
+                    for (var i = 0; i < apiCallresult[0].elements[0].authors.length; i++) {
+                        if(re.test( apiCallresult[0].elements[0].authors[i].toLowerCase())){
+                            realAuthorname = apiCallresult[0].elements[0].authors[i];
+                            console.log(author +" matches "+realAuthorname);
+                            var options = {papers: apiCallresult, author:realAuthorname};
+                            var bubble = new AuthorBubble(options);
+                            svgContainer.append(bubble);
+                        }
+                        
+                    }
+                }
+            }
+
 
         });
 
@@ -82,6 +104,7 @@
 
 
         });
+
 
 
     })

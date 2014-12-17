@@ -6,9 +6,12 @@ Parser = function($param){
     var CONTENTMODE_JSON = 1;
     var CONTENTMODE_HTML = 2;
     var url = "ajax.php";
+    var canvasId="canvas";
+    var canvas = d3.select(canvasId);
     var isDone = false;
-    var localData = {authors: {}, papers:{}, media:{}};
+    //var localData = {authors: {}, papers:{}, media:{}};
     var ajaxloader = $("<div id='ajaxloader'></div>");
+    var self = this;
 
     Parser.prototype.getAuthor = function(name,paper){}
     Parser.prototype.getAuthors= function (paper){}
@@ -19,15 +22,16 @@ Parser = function($param){
     Parser.prototype.callApi= function (options){
         console.log("call api with: ");
         console.log(options);
+        var ret = [];
 
         //options = {name: ,year: ,group: ,project: ,medium: }
         //url = "ajax.php?"+(options['name'] != null ? options['name'] : 'all')+":"+(options['year'] != null ? options['year'] : 'all')+":"+(options['group'] != null ? options['group'] : 'all')+":"+(options['project'] != null ? options['project'] : 'all')+      ":"+(options['medium'] != null ? options['medium'] : 'all');
         url = "ajax.php";
-        var me = this;
 
         $.ajax({
             url: url,
             type: "post",
+            async:false,
             data: {
                 'param0' : options['name'],
                 'param1' : options['year'],
@@ -39,23 +43,20 @@ Parser = function($param){
             dataType:'json',
             beforeSend: function(){
 
-              $("#canvas").innerHTML ="";
-              $("#canvas").append(ajaxloader);
+              $("#"+canvasId).innerHTML ="";
+              $("#"+canvasId).append(ajaxloader);
             },
             success: function(data,status,xhr){
-
-                    $('#canvas').append(data.toString());
-                    console.log(data);
-
-                    $('#ajaxloader').animate({
-                    opacity: 0
-                    }, 1000, "linear", function() {
+                console.log(data);
+                ret = data;
+                $('#ajaxloader').animate({opacity: 0}, 1000, "linear", function() {
                     $('#ajaxloader').remove()
-                    });
-                me.updateLocalData(data);
+                });
+                self.updateLocalData(data);
 
-                }
+            }
         })
+        return ret;
     }
     Parser.prototype.updateLocalData = function (data){
         // cache api call result
