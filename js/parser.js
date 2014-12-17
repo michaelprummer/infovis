@@ -45,6 +45,7 @@ Parser = function(opts){
             beforeSend: function(){
                 $("#canvas").addClass("loading");
                 $("#canvas").innerHTML ="";
+                $("#error").fadeOut(200);
             },
             success: function(data,status,xhr) {
                 ret = data;
@@ -73,6 +74,10 @@ Parser = function(opts){
                     }
                 }
             }
+        }).fail(function(jqXHR, textStatus, errorThrown){
+            $("#canvas").removeClass("loading");
+            $("#error").text(textStatus+":"+errorThrown);
+            $("#error").fadeIn(200);
         })
     }
     Parser.prototype.updateLocalData = function (data){

@@ -60,13 +60,13 @@ input{
 
 
 
-.input.error{
+.error{
     background-color:#F2687B;
     border: 1px solid #941223;
     color:#941223;
 }
 
-.input.success{
+.success{
     background-color:#A0F7A4;
     border: 1px solid #127817;
     border-radius: 3px;
