@@ -28,7 +28,7 @@
         $("button").button();
         $('#nav').tabs();
 
-        var parser = new Parser();
+        var parser = new Parser({svg:svgContainer});
 
         $("#searchAuthor").click(function(ev){
             ev.preventDefault();
@@ -38,29 +38,7 @@
             //options["conference"] = $('#conference').val();
             options["paper"] = $('#paper').val();
 
-            apiCallresult = parser.callApi(options);
-            console.log(apiCallresult);
-
-
-            if(options['name'] != null){
-                var author = options['name'];
-                var re = new RegExp(".*"+author.toLowerCase()+"$");
-                var realAuthorname = "";
-                if(apiCallresult.length >0){
-                    for (var i = 0; i < apiCallresult[0].elements[0].authors.length; i++) {
-                        if(re.test( apiCallresult[0].elements[0].authors[i].toLowerCase())){
-                            realAuthorname = apiCallresult[0].elements[0].authors[i];
-                            console.log(author +" matches "+realAuthorname);
-                            var options = {papers: apiCallresult, author:realAuthorname,svg:svgContainer};
-                            var bubble = new AuthorBubble(options);
-
-
-                        }
-                        
-                    }
-                }
-            }
-
+            parser.callApi(options);
 
         });
 

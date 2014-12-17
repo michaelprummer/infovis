@@ -89,6 +89,9 @@ input{
 }
 
 
+.loading {
+    background: url("../img/ajax-loader.gif") no-repeat #ffffff center center;
+}
 
 #ajaxloader {
     background: url("../img/ajax-loader.gif") no-repeat #ffffff center center;
