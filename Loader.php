@@ -27,7 +27,7 @@ class Loader {
 
         // Set Options
         for($i=0;$i<5;$i++){
-            if (isset($_POST['param' . $i])) {
+            if (isset($_POST['param' . $i]) && $_POST['param' . $i] != "") {
                 if($i!=0)
                     $options = $options . ":";
                 $options = $options . strtolower($_POST['param'.$i]);

@@ -5,29 +5,119 @@
     <title></title>
 </head>
 <link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/jquery-ui.css" rel="stylesheet" type="text/css" />
 <script type ="text/javascript" src="js/d3.v3.min.js"></script>
 <script type ="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+<script type ="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type ="text/javascript" src="js/parser.js"></script>
 <script type="text/javascript">
 
     // authors can store papers:{papername: {conference, date, quotes}} with ,
     // papers can store authors[],quotes and conference{author,date}
     // conference can store date, location, and papers: paper[]
-    parser = new Parser();
-    console.log(parser.callApi({name:"wiethoff"}));
+    $(document).ready(function(ev){
+        $("button").button();
+        $('#nav').tabs();
+
+
+        var parser = new Parser();
+
+        $("#searchButton,#searchAuthor").click(function(ev){
+            ev.preventDefault();
+            options = {};
+            options["name"] = $('#name').val();
+            options["year"] = $('#year').val();
+            options["conference"] = $('#conference').val();
+            options["paper"] = $('#paper').val();
+
+            parser.callApi(options);
+
+        });
+
+        // ANIMATING INPUTS:
+        var aniDuration = 200;
+        var inputHeightExpanded = '2.7em';
+        var inputHeightCollapsed = '1.5em';
+
+        $('.input label').click(function(ev){
+            // show input
+            ev.preventDefault();
+            //jquery animate cause of callback.
+            $(this).parent().addClass("showInput");
+            $(this).parent().animate({'height':inputHeightExpanded,duration:aniDuration/2});
+            $(this).animate({'font-size':'9px'},aniDuration,function() {$(this).siblings('input').focus()});
+            //css animation method
+            // var input = $(this).parent().addClass("showInput");
+            //$(this).addClass("small");
+            //$(this).parent().find('input').focus();
+
+
+        });
+        $('.input input').focus(function(ev){
+            // show input
+            //jquery animate cause of callback.
+            if(!$(this).parent().hasClass('showInput')){
+                $(this).parent().addClass("showInput");
+                $(this).parent().animate({'height':inputHeightExpanded,duration:aniDuration/2});
+                $(this).siblings('label').animate({'font-size':'9px'},200);
+
+            }
+            //css animation method
+            // var input = $(this).parent().addClass("showInput");
+            //$(this).addClass("small");
+            //$(this).parent().find('input').focus();
+
+
+        });
+        $('.input input').blur(function(ev){
+            // show input
+            if($(this).val() == ""){
+                $(this).parent().removeClass("showInput");
+                $(this).parent().animate({'height':inputHeightCollapsed,duration:aniDuration});
+                $(this).siblings('label').animate({'font-size':'11px'},aniDuration);
+            }
+            //jquery animate cause of callback.
+            //css animation method
+            // var input = $(this).parent().addClass("hideInput");
+
+
+        });
+
+
+    })
 </script>
 <body>
-<div id='ajaxloader'></div>
-<!--
-needed Methods:
+<div id="wrap">
+    <div id="nav">
+        <ul>
+            <li><a href="#tabs-1">Search by Author</a></li>
+            <li><a href="#tabs-2">Search by Publication</a></li>
+        </ul>
+        <div id="tabs-1">
+            <form action="#">
+               <span class="input col4">
+                   <label for="name">Author Name:</label> <input type="text" name="name" id="name"/><br/>
+                </span>
+                <div class="clear"></div>
+                <button name="search" id="searchAuthor"> search</button>
+            </form>
+        </div>
+        <div id="tabs-2">
+            <form action="#">
+                <span class="input col4">
+                   <label for="paper">Publication Title:</label><input type="text" name="paper" id="paper"/><br/>
+                </span>
+                <div class="clear"></div>
+                <button name="search" id="searchButton"> search</button>
+            </form>
+        </div>
 
-function getAuthor(name,paper){}
-function getAuthors(paper){}
-function getPapers(name,conference){}
-function getConference(paper){}
-function getConferences(name){}
--->
+    </div>
 
+    <div id ="canvas">
+        // here goes the svg content
+    </div>
+</div>
 
 
 </body>

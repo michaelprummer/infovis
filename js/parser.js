@@ -8,6 +8,7 @@ Parser = function($param){
     var url = "ajax.php";
     var isDone = false;
     var localData = {authors: {}, papers:{}, media:{}};
+    var ajaxloader = $("<div id='ajaxloader'></div>");
 
     Parser.prototype.getAuthor = function(name,paper){}
     Parser.prototype.getAuthors= function (paper){}
@@ -16,6 +17,8 @@ Parser = function($param){
     Parser.prototype.getConferences= function (name){}
     Parser.prototype.filter= function (json,key){}
     Parser.prototype.callApi= function (options){
+        console.log("call api with: ");
+        console.log(options);
 
         //options = {name: ,year: ,group: ,project: ,medium: }
         //url = "ajax.php?"+(options['name'] != null ? options['name'] : 'all')+":"+(options['year'] != null ? options['year'] : 'all')+":"+(options['group'] != null ? options['group'] : 'all')+":"+(options['project'] != null ? options['project'] : 'all')+      ":"+(options['medium'] != null ? options['medium'] : 'all');
@@ -33,13 +36,21 @@ Parser = function($param){
                 'param4' : options['medium'],
                 'contentMode' : CONTENTMODE_JSON
             },
+            dataType:'json',
+            beforeSend: function(){
+
+              $("#canvas").innerHTML ="";
+              $("#canvas").append(ajaxloader);
+            },
             success: function(data,status,xhr){
-                    $('body').append(data);
+
+                    $('#canvas').append(data.toString());
+                    console.log(data);
 
                     $('#ajaxloader').animate({
                     opacity: 0
                     }, 1000, "linear", function() {
-                    $('#ajax-loader').remove()
+                    $('#ajaxloader').remove()
                     });
                 me.updateLocalData(data);
 
