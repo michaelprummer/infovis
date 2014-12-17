@@ -36,13 +36,14 @@ class Loader
         if (false !== ($this->result = file_get_contents($url))) {
             $this->result = str_replace("</tr>", "", $this->result);
             $this->result = explode("<tr>", $this->result);
+
             // Iterate search results
             for ($i = 0; $i < count($this->result); $i++) {
                 $val = $this->result[$i];
 
                 // YEAR BLOCK
                 if (strpos($val, "year_separator") !== false) {
-                    $val = strip_tags($val);
+                    $val = utf8_encode(strip_tags($val));
 
                     if ($this->content_mode == self::CONTENTMODE_HTML) {
                         if ($block_counter > 0)
@@ -76,7 +77,7 @@ class Loader
 
                             $authors = explode(",", $val[$k]);
                             for ($i2 = 0; $i2 < count($authors); $i2++) {
-                                $author = trim(strip_tags(utf8_encode($authors[$i2])));
+                                $author = utf8_encode(trim(strip_tags($authors[$i2])));
 
                                 if ($this->content_mode == self::CONTENTMODE_HTML) {
                                     echo "<li>" . $author . "</li>";
@@ -92,7 +93,7 @@ class Loader
 
                             // TITLE
                         } elseif ($k == 4) {
-                            $title = trim(strip_tags($val[$k]));
+                            $title = utf8_encode(trim(strip_tags($val[$k])));
                             if ($this->content_mode == self::CONTENTMODE_HTML) {
                                 echo "<div class='title'>" . $title . "</div>";
                             } else {
@@ -101,7 +102,7 @@ class Loader
 
                             // DETAILS
                         } elseif ($k == 6) {
-                            $details = trim(strip_tags($val[$k]));
+                            $details = utf8_encode(trim(strip_tags($val[$k])));
 
                             if ($this->content_mode == self::CONTENTMODE_HTML) {
                                 echo "<div class='details'>" . $details . "</div>";
@@ -113,7 +114,7 @@ class Loader
                         } elseif ($k == 7) {
                             preg_match('/<a href="(.+)">/', $val[$k], $match);
                             if (count($match) > 0) {
-                                $link = trim($match[1]);
+                                $link = utf8_encode(trim($match[1]));
 
                                 if ($this->content_mode == self::CONTENTMODE_HTML) {
                                     echo "<div class='bib-link'>" . $link . "</div>";
@@ -147,6 +148,7 @@ class Loader
     function getJson() {
         $this->content_mode = self::CONTENTMODE_JSON;
         $json = $this->parsePubDB();
+
         header('Content-Type: application/json');
         echo json_encode($json);
     }
