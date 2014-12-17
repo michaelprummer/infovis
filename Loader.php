@@ -1,44 +1,42 @@
 <?php
-class Loader {
+class Loader
+{
     var $result;
     var $content_mode;
     const CONTENTMODE_JSON = 1;
     const CONTENTMODE_HTML = 2;
+    const CONTENTMODE_RAW = 3;
 
     /**
      * Constructor
      */
-    function Loader (){
-        $this->parsePubDB();
+    function Loader()
+    {
     }
 
     /**
      * Parses the search query result
      */
-    function parsePubDB(){
+    private function parsePubDB()
+    {
         $options = "";
-
-        // Set Content mode
-        if(isset($_POST['contentMode'])){
-            $this -> content_mode = ($_POST['contentMode'] == self::CONTENTMODE_HTML)?(self::CONTENTMODE_HTML):(self::CONTENTMODE_JSON);
-        } else {
-            $this -> content_mode = self::CONTENTMODE_HTML;
-        }
-
         // Set Options
-        for($i=0;$i<5;$i++){
+        for ($i = 0; $i < 5; $i++) {
             if (isset($_POST['param' . $i]) && $_POST['param' . $i] != "") {
-                if($i!=0)
+                if ($i > 0)
                     $options = $options . ":";
-                $options = $options . strtolower($_POST['param'.$i]);
+                $options = $options . strtolower($_POST['param' . $i]);
+
             } else {
-                $options = $options . ":all";
+                if ($i == 0)
+                    $options = $options . "all";
+                else
+                    $options = $options . ":all";
             }
         }
         // API URL
         $url = "http://www.medien.ifi.lmu.de/cgi-bin/search.pl?" . $options;
-
-        if($this->content_mode == self::CONTENTMODE_HTML) {
+        if ($this->content_mode == self::CONTENTMODE_HTML) {
             $block_counter = 0;
         } else {
             $json = array();
@@ -50,19 +48,19 @@ class Loader {
             $this->result = explode("<tr>", $this->result);
 
             // Iterate search results
-            for ($i=0; $i<count($this->result); $i++) {
+            for ($i = 0; $i < count($this->result); $i++) {
                 $val = $this->result[$i];
 
                 // YEAR BLOCK
                 if (strpos($val, "year_separator") !== false) {
                     $val = strip_tags($val);
 
-                    if($this->content_mode == self::CONTENTMODE_HTML){
-                        if($block_counter > 0)
+                    if ($this->content_mode == self::CONTENTMODE_HTML) {
+                        if ($block_counter > 0)
                             echo "</div>";
                         $block_counter++;
                         echo "<div data-name='$val' class='block'>";
-                        echo  "<h1 class='year'>" . $val . "</h1>";
+                        echo "<h1 class='year'>" . $val . "</h1>";
 
                     } else {
                         array_push($json, ["year" => $val, "elements" => []]);
@@ -70,73 +68,73 @@ class Loader {
                     }
 
 
-                // ELEMENT BLOCK
+                    // ELEMENT BLOCK
                 } elseif (strpos($val, "<td>") !== false) {
                     $val = explode("\n", $val);
 
-                    if($this->content_mode == self::CONTENTMODE_HTML){
+                    if ($this->content_mode == self::CONTENTMODE_HTML) {
                         echo "<div class='element'>";
                     }
 
-                    for ($k=0; $k<count($val); $k++) {
+                    for ($k = 0; $k < count($val); $k++) {
                         // AUTHORS
-                        if($k == 2) {
-                            if($this->content_mode == self::CONTENTMODE_HTML) {
+                        if ($k == 2) {
+                            if ($this->content_mode == self::CONTENTMODE_HTML) {
                                 echo "<ul class='authors'>";
                             } else {
-                                $json[count($json)-1]["elements"][$query_counter]["authors"] = array();
+                                $json[count($json) - 1]["elements"][$query_counter]["authors"] = array();
                             }
 
                             $authors = explode(",", $val[$k]);
-                            for($i2=0;$i2<count($authors);$i2++) {
+                            for ($i2 = 0; $i2 < count($authors); $i2++) {
                                 $author = trim(strip_tags(utf8_encode($authors[$i2])));
 
-                                if($this->content_mode == self::CONTENTMODE_HTML) {
+                                if ($this->content_mode == self::CONTENTMODE_HTML) {
                                     echo "<li>" . $author . "</li>";
                                 } else {
-                                    array_push($json[count($json)-1]["elements"][$query_counter]["authors"], $author);
+                                    array_push($json[count($json) - 1]["elements"][$query_counter]["authors"], $author);
                                 }
 
                             }
 
-                            if($this->content_mode == self::CONTENTMODE_HTML){
+                            if ($this->content_mode == self::CONTENTMODE_HTML) {
                                 echo "</ul>";
                             }
 
-                        // TITLE
+                            // TITLE
                         } elseif ($k == 4) {
                             $title = trim(strip_tags($val[$k]));
-                            if($this->content_mode == self::CONTENTMODE_HTML) {
+                            if ($this->content_mode == self::CONTENTMODE_HTML) {
                                 echo "<div class='title'>" . $title . "</div>";
                             } else {
-                                $json[count($json)-1]["elements"][$query_counter]["title"] = $title;
+                                $json[count($json) - 1]["elements"][$query_counter]["title"] = $title;
                             }
 
-                        // DETAILS
+                            // DETAILS
                         } elseif ($k == 6) {
                             $details = trim(strip_tags($val[$k]));
 
-                            if($this->content_mode == self::CONTENTMODE_HTML){
+                            if ($this->content_mode == self::CONTENTMODE_HTML) {
                                 echo "<div class='details'>" . $details . "</div>";
                             } else {
-                                $json[count($json)-1]["elements"][$query_counter]["details"] = $details;
+                                $json[count($json) - 1]["elements"][$query_counter]["details"] = $details;
                             }
 
                             // BIB LINK
                         } elseif ($k == 7) {
                             preg_match('/<a href="(.+)">/', $val[$k], $match);
-                            if(count($match) > 0) {
+                            if (count($match) > 0) {
                                 $link = trim($match[1]);
 
-                                if($this->content_mode == self::CONTENTMODE_HTML) {
+                                if ($this->content_mode == self::CONTENTMODE_HTML) {
                                     echo "<div class='bib-link'>" . $link . "</div>";
                                 } else {
-                                    $json[count($json)-1]["elements"][$query_counter]["bib-link"] = $link;
+                                    $json[count($json) - 1]["elements"][$query_counter]["bib-link"] = $link;
                                 }
                             }
                         }
                     }
-                    if($this->content_mode == self::CONTENTMODE_HTML) {
+                    if ($this->content_mode == self::CONTENTMODE_HTML) {
                         if (count($this->result) > 0)
                             echo "</div>";
                     }
@@ -144,26 +142,32 @@ class Loader {
                 }
             }
             // Close year block
-            if($this->content_mode == self::CONTENTMODE_HTML) {
+            if ($this->content_mode == self::CONTENTMODE_HTML) {
                 if (count($this->result) > 0)
                     echo "</div>";
-            }
 
-            if($this->content_mode == self::CONTENTMODE_JSON){
-                header('Content-Type: application/json');
-                echo json_encode($json);
+            } elseif ($this->content_mode == self::CONTENTMODE_JSON || $this->content_mode == self::CONTENTMODE_JSON) {
+                return $json;
             }
 
         } else {
             echo "<p class='error'>Error loading data from: $url</p>";
         }
+    }
 
-        // echo json_encode($arr);
+    function getJson()
+    {
+        $this->content_mode = self::CONTENTMODE_JSON;
+        header('Content-Type: application/json');
+        return json_encode($this->parsePubDB());
+    }
+
+    function getHTML()
+    {
+        $this->content_mode = self::CONTENTMODE_HTML;
+        $this->parsePubDB();
     }
 
 }
 
-
-
 ?>
-
