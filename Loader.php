@@ -136,7 +136,7 @@ class Loader
                 if (count($this->result) > 0)
                     echo "</div>";
 
-            } elseif ($this->content_mode == self::CONTENTMODE_JSON || $this->content_mode == self::CONTENTMODE_JSON) {
+            } elseif ($this->content_mode == self::CONTENTMODE_JSON || $this->content_mode == self::CONTENTMODE_RAW) {
                 return $json;
             }
 
@@ -159,8 +159,7 @@ class Loader
         $this->parsePubDB();
     }
 
-    function getRAW()
-    {
+    function getRAW() {
         $this->content_mode = self::CONTENTMODE_RAW;
         return $this->parsePubDB();
     }
