@@ -86,6 +86,7 @@ Parser = function(opts){
     Parser.prototype.addFilter = function(opts){
         if(opts.hasOwnProperty('year')){
             this.filter['year'] = opts['year'];
+            console.log("year filter changed to: "+this.filter['year'].from+", "+this.filter['year'].to);
         }
 
     }
