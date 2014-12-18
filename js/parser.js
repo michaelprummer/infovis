@@ -10,9 +10,9 @@ Parser = function(opts){
     var canvas = d3.select(canvasId);
     var isDone = false;
     this.svg =opts["svg"];
+    this.filter = {};
     //var localData = {authors: {}, papers:{}, media:{}};
 
-    var ajaxLoader = $("<div id='ajaxloader'></div>");
     var that = this;
     // methods if we had a nice structured database
     /*Parser.prototype.getAuthor = function(name,paper){}
@@ -52,6 +52,7 @@ Parser = function(opts){
                 $("#" + canvasId).removeClass("loading");
                 that.updateLocalData(data);
 
+                console.log("Api Call result:");
                 console.log(data);
 
                 var bubble;
@@ -60,6 +61,8 @@ Parser = function(opts){
                     var re = new RegExp(".*" + author.toLowerCase() + "$");
                     var realAuthorname = "";
                     if (data.length > 0) {
+                        data = that.filterData(data);
+
                         for (var i = 0; i < data[0].elements[0].authors.length; i++) {
                             if (re.test(data[0].elements[0].authors[i].toLowerCase())) {
                                 realAuthorname = data[0].elements[0].authors[i];
@@ -79,6 +82,24 @@ Parser = function(opts){
             $("#error").text(textStatus+":"+errorThrown);
             $("#error").fadeIn(200);
         })
+    }
+    Parser.prototype.addFilter = function(opts){
+        if(opts.hasOwnProperty('year')){
+            this.filter['year'] = opts['year'];
+        }
+
+    }
+    Parser.prototype.filterData = function (data){
+        if(this.filter["year"] != null){
+            for (var i = 0; i < data.length; i++) {
+                if(parseInt(data[i].year) < parseInt(this.filter["year"].from) || parseInt(data[i].year) > parseInt(this.filter["year"].to)){
+                    //console.log("filtered:"+ data[i].year);
+                    data.splice(i,1);
+                    i--;
+                }
+            }
+        }
+        return data;
     }
     Parser.prototype.updateLocalData = function (data){
 

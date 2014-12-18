@@ -25,9 +25,26 @@
                 .attr("height", 600);
                 //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
                 // viewbox ist awesome für navigation in unserem graphen, eingebauter zoom + bildausschnitt
-
+        var year = new Date().getFullYear();
         $("button").button();
         $('#nav').tabs();
+        $( "#yearSlider" ).slider({
+            range: true,
+            min: year-20,
+            max: year,
+            values: [ year-5, year ],
+            slide: function( event, ui ) {
+                $( "#amount" ).val( ui.values[ 0 ] + " to " + ui.values[ 1 ] );
+                parser.addFilter({
+                    year:{
+                        from:ui.values[ 0 ],
+                        to:ui.values[ 1 ]
+                    }
+                });
+            }
+        });
+        $( "#amount" ).val(  $( "#yearSlider" ).slider( "values", 0 ) +
+        " to " + $( "#yearSlider" ).slider( "values", 1 ) );
 
         var parser = new Parser({svg:svgContainer});
 
@@ -45,8 +62,8 @@
 
         // SEARCH FORM ANIMATING INPUTS:
         var aniDuration = 200;
-        var inputHeightExpanded = '2.7em';
-        var inputHeightCollapsed = '1.5em';
+        var inputHeightExpanded = '50px';
+        var inputHeightCollapsed = '22px';
 
         $('.input label').click(function(ev){
             // show input
@@ -109,6 +126,13 @@
                    <label for="name">Author Name:</label> <input value="Wiethoff" type="text" name="name" id="name"/><br/>
                 </span>
                 <div class="clear"></div>
+                <div id="yearSlider"></div>
+                <p>
+                    <label for="amount">from years </label>
+                    <input type="text" id="amount" readonly class="green" style="border:none">
+                </p>
+
+                <div class="clear"></div>
                 <button name="search" id="searchAuthor"> search</button>
             </form>
         </div>
@@ -119,10 +143,11 @@
                 </span>
                 <div class="clear"></div>
                 <button name="search" id="searchButton"> search</button>
+
             </form>
         </div>
-
     </div>
+
 
     <div id ="canvas">
         <!-- here goes the svg content-->
