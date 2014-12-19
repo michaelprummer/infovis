@@ -63,9 +63,9 @@ class DB {
 
             foreach($elements as $ele){
                 $title = $ele['title'];
-                //print_r($ele);
                 $details = $ele['details'];
-                $this->db->query("INSERT IGNORE INTO `papers` (`title`, `year`, `bib_link`, `details`) VALUES ('$title', '$year', '', '$details')");
+                $bib_link = (isset($ele['bib_link']))? ($ele['bib_link']) : ("no link");
+                $this->db->query("INSERT IGNORE INTO `papers` (`title`, `year`, `bib_link`, `details`) VALUES ('$title', '$year', '$bib_link', '$details')");
                 $id = mysqli_fetch_array($this->db->query("SELECT id FROM papers ORDER BY id DESC LIMIT 1"))[0];
 
                 foreach($ele["authors"] as $author) {

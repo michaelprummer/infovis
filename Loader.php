@@ -119,7 +119,11 @@ class Loader
                                 if ($this->content_mode == self::CONTENTMODE_HTML) {
                                     echo "<div class='bib-link'>" . $link . "</div>";
                                 } else {
-                                    $json[count($json) - 1]["elements"][$query_counter]["bib-link"] = $link;
+                                    $json[count($json) - 1]["elements"][$query_counter]["bib_link"] = $link;
+                                }
+                            } else {
+                                if(!$this->content_mode == self::CONTENTMODE_HTML){
+                                    $json[count($json) - 1]["elements"][$query_counter]["bib_link"] = "no link";
                                 }
                             }
                         }
