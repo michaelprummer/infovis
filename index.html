@@ -63,8 +63,8 @@
             options["paper"] = $('#paper').val();
 
             parser.callApi(options);
-
         });
+
 
         // SEARCH FORM ANIMATING INPUTS:
         var aniDuration = 200;
@@ -101,6 +101,12 @@
 
 
         });
+
+        // Clear Input field on click
+        $('#name').on("click", function (){
+            $(this).val("");
+        })
+
         $('.input input').blur(function(ev){
             // show input
             if($(this).val() == ""){
@@ -111,8 +117,6 @@
             //jquery animate cause of callback.
             //css animation method
             // var input = $(this).parent().addClass("hideInput");
-
-
         });
 
         /* * * * * *
@@ -120,7 +124,18 @@
          * * ** * */
         $("input[name=name]").autocomplete({
             source: 'autoComplete.php',
-            delay: 200
+            delay: 200,
+            minChars: 1,
+            cache:	true,
+            select: function(event, ui) {
+                options = {};
+                options["name"] = ui.item.value;
+                //options["year"] = $('#year').val();
+                //options["conference"] = $('#conference').val();
+                //options["paper"] = $('#paper').val();
+
+                parser.callApi(options);
+            }
         })
 
 
@@ -134,7 +149,7 @@
             <li><a href="#tabs-2">Search by Publication</a></li>
         </ul>
         <div id="tabs-1">
-            <form action="#">
+            <form id="search-ui" action="#">
                <span class="input col4">
                    <label for="name">Author Name:</label> <input value="Wiethoff" type="text" name="name" id="name"/><br/>
                 </span>
