@@ -89,7 +89,7 @@ LIMIT 1
 
     public function getAutoSearchNames($term){
         $a_json = array();
-        $data = $this->db->query("SELECT * FROM authors WHERE firstname LIKE '%$term%' OR lastname LIKE '%$term%' ORDER BY lastname LIMIT 15");
+        $data = $this->db->query("SELECT * FROM authors WHERE firstname LIKE '%$term%' OR lastname LIKE '%$term%' ORDER BY lastname LIMIT 25");
         if($data){
             while($row = mysqli_fetch_array($data)) {
                 $firstname = (isset($row['firstname']))?($row['firstname']):("");
