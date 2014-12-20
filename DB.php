@@ -111,5 +111,20 @@ class DB {
         return $a_json;
     }
 
+    public function getAutoSearchPaper($term){
+        $a_json = array();
+        $data = $this->db->query("SELECT * FROM papers WHERE title LIKE '%$term%' LIMIT 25");
+        if($data){
+            while($row = mysqli_fetch_array($data)) {
+                $title = (isset($row['title']))?($row['title']):("");
+                //$lastname = (isset($row['lastname']))?($row['lastname']):("");
+                $a_json_row["value"] = $row['id'];
+                $a_json_row["label"] = $title;
+                array_push($a_json, $a_json_row);
+            }
+        }
+        return $a_json;
+    }
+
 }
 ?>
