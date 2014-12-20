@@ -7,9 +7,11 @@ require_once("Loader.php");
 
 class DB {
     var $db;
+    var $loader;
 
     function DB (){
         $this->connect();
+        $this->loader = new Loader();
     }
 
     function connect(){
@@ -48,13 +50,19 @@ class DB {
                               FOREIGN KEY(search_name) REFERENCES authors(search_name),
                               PRIMARY KEY(id, search_name)) ENGINE=MyISAM DEFAULT CHARSET=utf8");
 
+        $this->db->query("CREATE TABLE IF NOT EXISTS extern_dblp(
+                              id INT NOT NULL AUTO_INCREMENT,
+                              search_name VARCHAR(127) NOT NULL,
+                              content VARCHAR(16383),
+                              FOREIGN KEY(search_name) REFERENCES authors(search_name),
+                              PRIMARY KEY(id, search_name)) ENGINE=MyISAM DEFAULT CHARSET=utf8");
+
         $this->loadData();
+        $this->loadDBLPData();
     }
 
     function loadData(){
-        $loader = new Loader();
-
-        $data = $loader->getRAW();
+        $data = $this->loader ->getRAW();
         //print_r($data);
 
         foreach($data as $val){
@@ -80,20 +88,35 @@ class DB {
                         $search_name = strtolower($author[1]);
                         $lastname = $author[1];
                         $firstname = $author[0];
-                        $this->db->query("INSERT IGNORE INTO `authors` (`lastname`, `firstname`, `search_name`) VALUES ('$firstname', '$lastname', '$search_name')");
+                        $this->db->query("INSERT IGNORE INTO `authors` (`lastname`, `firstname`, `search_name`) VALUES ('$lastname', '$firstname', '$search_name')");
                         $this->db->query("INSERT IGNORE INTO `authors_papers` (`id`, `search_name`) VALUES ('$id', '$search_name')");
 
                     } else {
                         $lastname = ($author[1] == "von")? ($author[2]) : ($author[1] . $author[2]);
                         $search_name = strtolower($lastname);
                         $firstname = $author[0];
-                        $this->db->query("INSERT IGNORE INTO `authors` (`lastname`, `firstname`, `search_name`) VALUES ('$firstname', '$lastname', '$search_name')");
+                        $this->db->query("INSERT IGNORE INTO `authors` (`lastname`, `firstname`, `search_name`) VALUES ('$lastname', '$firstname', '$search_name')");
                         $this->db->query("INSERT IGNORE INTO `authors_papers` (`id`, `search_name`) VALUES ('$id', '$search_name')");
                     }
                 }
             }
         }
         echo "Setup finished, run just once to avoid dupplicates...";
+    }
+
+    function loadDBLPData(){
+        $data = $this->db->query("SELECT * FROM authors");
+        if($data){
+            while($row = mysqli_fetch_array($data)) {
+                $firstname = (isset($row['firstname']))?($row['firstname']):("");
+                $lastname = (isset($row['lastname']))?($row['lastname']):("");
+                $search_name = (isset($row['search_name']))?($row['search_name']):("");
+
+                $result = $this->loader->parseDBLP($lastname . ":" . $firstname);
+                if(isset($result) && $result != "")
+                    $this->db->query("INSERT IGNORE INTO `extern_dblp` (`search_name`, `content`) VALUES ('$search_name', '$result')");
+            }
+        }
     }
 
     public function getAutoSearchNames($term){
@@ -108,6 +131,7 @@ class DB {
                 array_push($a_json, $a_json_row);
             }
         }
+
         return $a_json;
     }
 

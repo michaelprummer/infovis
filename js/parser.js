@@ -5,7 +5,7 @@
 Parser = function(opts){
     var CONTENTMODE_JSON = 1;
     var CONTENTMODE_HTML = 2;
-    var url = "apiCall.php";
+    var url = "apiCallLMU.php";
     var canvasId="canvas";
     var canvas = d3.select(canvasId);
     var isDone = false;
@@ -28,7 +28,7 @@ Parser = function(opts){
         this.options = options;
         var ret = [];
 
-        url = "apiCall.php";
+        url = "apiCallLMU.php";
 
         $.ajax({
             url: url,

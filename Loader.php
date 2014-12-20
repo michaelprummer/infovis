@@ -1,7 +1,8 @@
 <?php
 class Loader
 {
-    private $result;
+    private $lmuApiResult;
+    private $dblpApiResult;
     private $content_mode;
     const CONTENTMODE_JSON = 1;
     const CONTENTMODE_HTML = 2;
@@ -33,13 +34,13 @@ class Loader
         $block_counter = 0;
         $json = array();
 
-        if (false !== ($this->result = file_get_contents($url))) {
-            $this->result = str_replace("</tr>", "", $this->result);
-            $this->result = explode("<tr>", $this->result);
+        if (false !== ($this->lmuApiResult = file_get_contents($url))) {
+            $this->lmuApiResult = str_replace("</tr>", "", $this->lmuApiResult);
+            $this->lmuApiResult = explode("<tr>", $this->lmuApiResult);
 
             // Iterate search results
-            for ($i = 0; $i < count($this->result); $i++) {
-                $val = $this->result[$i];
+            for ($i = 0; $i < count($this->lmuApiResult); $i++) {
+                $val = $this->lmuApiResult[$i];
 
                 // YEAR BLOCK
                 if (strpos($val, "year_separator") !== false) {
@@ -129,7 +130,7 @@ class Loader
                         }
                     }
                     if ($this->content_mode == self::CONTENTMODE_HTML) {
-                        if (count($this->result) > 0)
+                        if (count($this->lmuApiResult) > 0)
                             echo "</div>";
                     }
                     $query_counter++;
@@ -137,7 +138,7 @@ class Loader
             }
             // Close year block
             if ($this->content_mode == self::CONTENTMODE_HTML) {
-                if (count($this->result) > 0)
+                if (count($this->lmuApiResult) > 0)
                     echo "</div>";
 
             } elseif ($this->content_mode == self::CONTENTMODE_JSON || $this->content_mode == self::CONTENTMODE_RAW) {
@@ -157,8 +158,7 @@ class Loader
         echo json_encode($json);
     }
 
-    function getHTML()
-    {
+    function getHTML() {
         $this->content_mode = self::CONTENTMODE_HTML;
         $this->parsePubDB();
     }
@@ -168,6 +168,26 @@ class Loader
         return $this->parsePubDB();
     }
 
+
+    function parseDBLP($name) {
+        $new_name = $name;
+        if($name == "Hussmann:Heinrich"){
+            $new_name = "Hu=szlig=mann:Heinrich";
+        }elseif($name == "DeLuca:Alexander"){
+            $new_name = "Luca:Alexander_De";
+        } else {
+            $new_name = $name;
+        }
+
+        $url = "http://www.informatik.uni-trier.de/~ley/pers/xx/h/" . $new_name;
+        //echo $url ."<br>";
+
+        if (false !== ($this->dblpApiResult = file_get_contents($url))) {
+            if(!(false !== strpos($this->dblpApiResult, "Got illegal request"))){
+                return $this->dblpApiResult;
+            }
+        }
+    }
 }
 
 ?>
