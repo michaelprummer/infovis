@@ -178,9 +178,7 @@ class Loader
         } else {
             $new_name = $name;
         }
-
-        $url = "http://www.informatik.uni-trier.de/~ley/pers/xx/h/" . $new_name;
-        //echo $url ."<br>";
+        $url = "http://www.informatik.uni-trier.de/~ley/pers/xx/" . strtolower(substr(trim($name),0,1)) . "/" . $new_name;
 
         if (false !== ($this->dblpApiResult = file_get_contents($url))) {
             if(!(false !== strpos($this->dblpApiResult, "Got illegal request"))){
