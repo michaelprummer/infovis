@@ -124,11 +124,14 @@ class DB {
                 $search_name = (isset($row['search_name']))?($row['search_name']):("");
                 $result = $this->loader->parseDBLP($lastname . ":" . $firstname);
                 if(isset($result) && $result != ""){
-                    $this->db->query("INSERT IGNORE INTO extern_dblp (search_name, content) VALUES ('$search_name', '$result')");
+                    $result = $xml = simplexml_load_string($result);
+                    $json = json_encode($xml);
+
+                    echo $json;
+                    $this->db->query("INSERT IGNORE INTO extern_dblp (search_name, content) VALUES ('$search_name', '$json')");
                 }
             }
         }
-        echo "<p>DBPL crawled...</p>";
     }
 
     public function getAutoSearchNames($term){
