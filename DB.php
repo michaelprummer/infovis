@@ -15,12 +15,14 @@ class DB {
     }
 
     function connect(){
-        $this->db = new mysqli("localhost", "root", "");
+        $config = parse_ini_file("config.ini", TRUE);
+        $this->db = new mysqli($config["database"]["host"], $config["database"]["user"], $config["database"]["password"]);
+
         if ($this->db->connect_errno) {
             die("Failed to connect to MySQL: (" . $this->db->connect_errno . ") " . $this->db->connect_error);
         } else {
             $this->db->set_charset("utf8");
-            $this->db->select_db("infoVis");
+            $this->db->select_db($config["database"]["name"]);
         }
     }
 
