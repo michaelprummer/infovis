@@ -31,6 +31,14 @@ class DB {
             mysqli_query($this->db, 'CREATE DATABASE infoVis DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;');
             mysqli_select_db($this->db, 'infoVis');
         }
+
+        echo "Clearing tables...<br>";
+        $this->db->query("DROP Table authors");
+        $this->db->query("DROP Table papers");
+        $this->db->query("DROP Table authors_papers");
+        $this->db->query("DROP Table extern_dblp");
+        echo "Rebuilding tables...<br>";
+
         $this->db->query("CREATE TABLE IF NOT EXISTS authors(
                              lastname VARCHAR(127) NOT NULL,
                              firstname VARCHAR(127) NOT NULL,
@@ -41,7 +49,8 @@ class DB {
                               id INT NOT NULL AUTO_INCREMENT,
                               title VARCHAR(255) NOT NULL,
                               year VARCHAR(63) NOT NULL,
-                              bib_link VARCHAR(127) NOT NULL,
+                              bib VARCHAR(16383) NOT NULL,
+                              keywords VARCHAR(2047) NOT NULL,
                               details VARCHAR(127) NOT NULL,
                           PRIMARY KEY(id)) ENGINE=MyISAM DEFAULT CHARSET=utf8");
 
@@ -59,20 +68,13 @@ class DB {
                               FOREIGN KEY(search_name) REFERENCES authors(search_name),
                               PRIMARY KEY(id, search_name)) ENGINE=MyISAM DEFAULT CHARSET=utf8");
 
-        echo "Clearing tables...<br>";
-        $this->db->query("truncate authors");
-        $this->db->query("truncate papers");
-        $this->db->query("truncate authors_papers");
-        $this->db->query("truncate extern_dblp");
-        echo "Rebuilding tables...<br>";
-
         $this->loadData();
     }
 
     function loadData(){
         echo "Crawling LMU data...<br>";
         $data = $this->loader ->getRAW();
-        //print_r($data);
+        print_r($data);
 
         foreach($data as $val){
             $year = $val["year"];
@@ -81,8 +83,13 @@ class DB {
             foreach($elements as $ele){
                 $title = $ele['title'];
                 $details = $ele['details'];
-                $bib_link = (isset($ele['bib_link']))? ($ele['bib_link']) : ("no link");
-                $this->db->query("INSERT IGNORE INTO `papers` (`title`, `year`, `bib_link`, `details`) VALUES ('$title', '$year', '$bib_link', '$details')");
+                $bib_link = (isset($ele['bib_link']))? ($ele['bib_link']) : ("");
+                $keywords = (isset($ele['keywords']))? ($ele['keywords']) : ("");
+                if(isset($ele['keywords']))
+                    echo "keywords: " . $ele['keywords'];
+
+                $this->db->query("INSERT IGNORE INTO `papers`(`title`, `year`, `bib`, `keywords`, `details`) VALUES ('$title', '$year', '$bib_link', '$keywords', '$details')");
+
                 $id = mysqli_fetch_array($this->db->query("SELECT id FROM papers ORDER BY id DESC LIMIT 1"))[0];
 
                 foreach($ele["authors"] as $author) {

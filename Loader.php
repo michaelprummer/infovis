@@ -59,7 +59,7 @@ class Loader
                     }
 
 
-                    // ELEMENT BLOCK
+                // ELEMENT BLOCK
                 } elseif (strpos($val, "<td>") !== false) {
                     $val = explode("\n", $val);
 
@@ -119,16 +119,40 @@ class Loader
 
                                 if ($this->content_mode == self::CONTENTMODE_HTML) {
                                     echo "<div class='bib-link'>" . $link . "</div>";
-                                } else {
+
+                                } elseif($this->content_mode == self::CONTENTMODE_JSON){
                                     $json[count($json) - 1]["elements"][$query_counter]["bib_link"] = $link;
+                                } else {
+                                    $bib_url = "http://www.medien.ifi.lmu.de" . $link ;
+                                    $bib_res = "none";
+
+                                    // Add Keywords separate
+                                    if (false !== ($bib_res = file_get_contents($bib_url))) {
+                                        $tmp = explode("keywords", $bib_res);
+
+                                        if(isset($tmp) && count($tmp) == 2) {
+                                            $keywords = $tmp[1];
+                                            $keywords = str_replace(" = {", "", $keywords);
+                                            $keywords = str_replace("}", "", $keywords);
+                                            $json[count($json) - 1]["elements"][$query_counter]["keywords"] = $keywords;
+                                        } else {
+                                            $json[count($json) - 1]["elements"][$query_counter]["keywords"] = "none";
+                                        }
+                                    }
+
+                                    $bib_res = str_replace("@", "[", $bib_res);
+                                    $bib_res = $bib_res . "]";
+                                    $json[count($json) - 1]["elements"][$query_counter]["bib_link"] = $bib_res;
                                 }
+
                             } else {
                                 if(!$this->content_mode == self::CONTENTMODE_HTML){
-                                    $json[count($json) - 1]["elements"][$query_counter]["bib_link"] = "no link";
+                                    $json[count($json) - 1]["elements"][$query_counter]["bib_link"] = "";
                                 }
                             }
                         }
                     }
+
                     if ($this->content_mode == self::CONTENTMODE_HTML) {
                         if (count($this->lmuApiResult) > 0)
                             echo "</div>";
@@ -136,6 +160,7 @@ class Loader
                     $query_counter++;
                 }
             }
+
             // Close year block
             if ($this->content_mode == self::CONTENTMODE_HTML) {
                 if (count($this->lmuApiResult) > 0)
