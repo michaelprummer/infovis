@@ -15,6 +15,9 @@ AuthorBubble = function(options){
     this.paperTitles = [];
     this.detailView = false;
 
+    this.width = $("#svg-container").attr("width")
+    this.height = $("#svg-container").attr("height")
+
     AuthorBubble.prototype.showDetails = function(){
 
     }
@@ -69,7 +72,7 @@ AuthorBubble = function(options){
             .enter()
             .append("g")
             .attr("class", "activityArc")
-            .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
+            .attr("transform", "translate(" + (this.width/2 - innerRadius) + "," + (this.width/2 - innerRadius) + ")");
 
         //Draw arc paths
         arcs.append("path")
@@ -99,16 +102,16 @@ AuthorBubble = function(options){
 
         namebadge.append("circle")
             .style("fill", "green")
-            .attr("cx",w/2)
-            .attr("cy",h/2)
+            .attr("cx",this.width/2 - innerRadius)
+            .attr("cy",this.height/2 - innerRadius)
             .attr("r",innerRadius)
             .attr("text-anchor", "middle")
 
         namebadge.append("text")
             .text(this.authorname)
             .attr("text-anchor", "middle")
-            .attr("dx",w/2)
-            .attr("dy",h/2)
+            .attr("dx",this.width/2 - innerRadius)
+            .attr("dy",this.height/2 - innerRadius)
             .attr("class","authorname")
             .style("fill","#ffffff");
 
@@ -123,8 +126,8 @@ AuthorBubble = function(options){
             return d;
         })
         .attr("text-anchor", "middle")
-        .attr("dx",w/2)
-        .attr("dy",h/2)
+        .attr("dx",this.width/2 - innerRadius)
+        .attr("dy",this.height/2 - innerRadius)
         .attr("class","paper")
         .style("fill","#ffffff")
         .append("textPath")
