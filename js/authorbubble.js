@@ -18,6 +18,7 @@ AuthorBubble = function(options){
     this.width = $("#svg-container").attr("width")
     this.height = $("#svg-container").attr("height")
 
+
     AuthorBubble.prototype.showDetails = function(){
 
     }
@@ -44,7 +45,7 @@ AuthorBubble = function(options){
 
     this.createD3Data();
 
-    console.log("creating author bubble with name: "+this.authorname);
+//    console.log("creating author bubble with name: "+this.authorname);
     this.bubble = this.svg.append("g").attr("transform", "translate(" + 0 + "," + 0 + ")").attr("class","authorBubble");
 
 
@@ -115,28 +116,38 @@ AuthorBubble = function(options){
             .attr("class","authorname")
             .style("fill","#ffffff");
 
+
     //PAPERS not working
     var paperFan = this.bubble.append("g").attr("class","paperFan");
-
     paperFan.selectAll("text")
         .data(that.paperTitles)
-        .enter()
-        .append("text")
+        .enter().append("text")
+        .attr("transform", "translate(" + (this.width/2-innerRadius) + "," + (this.width/2-innerRadius) +") rotate(90)")
+//
+        .attr("transform", function(d, i) {
+            var angle = (360/that.paperTitles.length)*i;
+            var r = 450;
+
+            var cx = (that.width/2 - 100)
+            var cy = (that.height/2 - 100)
+
+            var x = cx + r *Math.cos(angle*0.0174532925)
+            var y = cy + r *Math.sin(angle*0.0174532925)
+
+            return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
+        })
         .text(function(d,i){
             return d;
         })
         .attr("text-anchor", "middle")
-        .attr("dx",this.width/2 - innerRadius)
-        .attr("dy",this.height/2 - innerRadius)
         .attr("class","paper")
-        .style("fill","#ffffff")
+        .style("fill","#000")
         .append("textPath")
         //.attr("textLength",function(d,i){return 5 ;})
         .attr("xlink:href",function(d,i){return "#s"+i;})
         .attr("startOffset",function(d,i){
             pie(that.yearPaperCount[i]);
         })
-        .attr("dy","-1em")
         .text(function(d,i){
             return that.paperTitles.keys[i];
         })
