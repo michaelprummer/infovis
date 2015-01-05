@@ -12,17 +12,27 @@ AuthorBubble = function(options){
     this.yearLabels = [];
     this.yearPaperCount = [];
     this.paperTitles = [];
-    this.detailView = false;
+    this.detailView = true;
+
+    this.width = $("#svg-container").attr("width");
+    this.height = $("#svg-container").attr("height");
 
     AuthorBubble.prototype.showDetails = function(){
+        this.detailView = !this.detailView;
+        if(this.detailView == false){
+            this.paperFan.transition().style("opacity",0);
+            this.activityPie.transition().style("opacity",0);
+        }else{
+            this.paperFan.transition().style("opacity",1);
+            this.activityPie.transition().style("opacity",1);
+        }
 
     }
     AuthorBubble.prototype.listPapers = function(){
         ret = [];
         for (var i = 0; i < this.papers.length; i++) {
-            ret[i] = [];
             for (var j = 0; j < this.papers[i].elements.length; j++) {
-                ret[i].push(this.papers[i].elements[j].title);
+                ret.push(this.papers[i].elements[j].title);
             }
         }
         return ret;
@@ -46,7 +56,7 @@ AuthorBubble = function(options){
 
 
     // ACTIVITY PIE
-    var activityPie =  this.bubble.append("g").attr("class","activityPie");
+    this.activityPie =  this.bubble.append("g").attr("class","activityPie");
     var monochrome = d3.scale.ordinal().range(["#01EC6A","#1DF47D","#60FDA6","#91FDC1","#CEFEE3","#F7FEFA"]);
         var w = 300;
         var h = 300;
@@ -62,14 +72,14 @@ AuthorBubble = function(options){
 
 
         //Set up groups
-        var arcs = activityPie.selectAll("g.activityArc")
+        var arcs = this.activityPie.selectAll("g.activityArc")
             .data(
                 pie(that.yearPaperCount)
             )
             .enter()
             .append("g")
             .attr("class", "activityArc")
-            .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
+            .attr("transform", "translate(" + (this.width/2 - innerRadius) + "," + (this.width/2 - innerRadius) + ")");
 
         //Draw arc paths
         arcs.append("path")
@@ -81,7 +91,7 @@ AuthorBubble = function(options){
             return color(i);
         });
 
-        //Labels
+        //year Labels
         arcs.append("text")
             .attr("transform", function(d) {
                 return "translate(" + arc.centroid(d) + ")";
@@ -97,36 +107,41 @@ AuthorBubble = function(options){
             .append("g")
             .attr("class","name")
             .on("mousedown",function(){
-                console.log("CLICKED "+that.authorname);
+                that.showDetails();
             });
 
         namebadge.append("circle")
             .style("fill", "green")
-            .attr("cx",w/2)
-            .attr("cy",h/2)
+            .attr("cx",this.width/2 - innerRadius)
+            .attr("cy",this.height/2 - innerRadius)
             .attr("r",innerRadius)
             .attr("text-anchor", "middle")
 
         namebadge.append("text")
             .text(this.authorname)
             .attr("text-anchor", "middle")
-            .attr("dx",w/2)
-            .attr("dy",h/2)
+            .attr("dx",this.width/2 - innerRadius)
+            .attr("dy",this.height/2 - innerRadius)
             .attr("class","authorname")
             .style("fill","#ffffff");
 
     //PAPERS not working
-    var paperFan = this.bubble.append("g").attr("class","paperFan");
+    function paper(d,i){
+        return d[i];
+    }
 
-    paperFan.selectAll("text")
-        .data(that.paperTitles)
+    this.paperFan = this.bubble.append("g").attr("class","paperFan");
+
+    this.paperFan.selectAll("text")
+        .data(that.paperTitles,paper)
         .enter()
         .append("text")
         .text(function(d,i){
             return d;
         })
-        .attr("dx",w/2)
-        .attr("dy",h/2)
+        .attr("dx",this.width/2 - innerRadius)
+        .attr("dy",this.height/2 - innerRadius)
+        .style("font-size","10")
         .attr("class","paper")
         .style("fill","#000000")
         .append("textPath")
