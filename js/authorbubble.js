@@ -7,12 +7,12 @@ AuthorBubble = function(options){
     this.id= options["id"];
     this.authorname = options["author"];
     this.svg = options['svg'];
-    var that = this;
     this.data={author: this.authorname, papers:{}};
     this.yearLabels = [];
     this.yearPaperCount = [];
     this.paperTitles = [];
     this.detailView = true;
+    var that = this;
 
     this.width = $("#svg-container").attr("width");
     this.height = $("#svg-container").attr("height");
@@ -69,7 +69,7 @@ AuthorBubble = function(options){
             .innerRadius(innerRadius)
             .outerRadius(outerRadius);
 
-        var pie = d3.layout.pie().sort(null).value(function(d){return d;});
+        var pie = d3.layout.pie().value(function(d){return d;});
 
 
         //Set up groups
@@ -136,45 +136,62 @@ AuthorBubble = function(options){
 
     this. paperFan.selectAll("text")
         .data(that.paperTitles)
-        .enter().append("text")
+        .enter().append("g")
         .attr("transform", "translate(" + (this.width/2-innerRadius) + "," + (this.width/2-innerRadius) +") rotate(90)")
-        .attr("title",function(d,i){
+        .attr("title", function(d,i){
             return that.paperTitles[i].toString();
         })
         .attr("transform", function(d, i) {
             var angle = (360/that.paperTitles.length)*i-85;
-            var r = 220;
+            this.currentAngle = angle;
 
+            var r = 240;
             var cx = (that.width/2 - 100);
-            var cy = (that.height/2 - 100);
-            if(angle > 180){
 
-            }
+            var cy = (that.height/2 - 100);
             var x = cx + r *Math.cos(angle*0.0174532925);
             var y = cy + r *Math.sin(angle*0.0174532925);
-
             return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
         })
-        .text(function(d,i){
-            var text = d
-            var len = 10;
-            if(text.length < len) {
-                var oldLen = text.length;
-                for(i=0;i<(len - oldLen + 3);i++){
-                    text= "." + text;
-                }
-            } else {
-                text = text.substr(0,20)
-                text+="..."
-            }
-            return text;
+        .each(function(d, i) {
+            d3.select(this)
+                .append('g') // append text inside the group
+                .attr("index", i)
+                .attr("transform", function(d) {
+                    var angle = (360/that.paperTitles.length)*i;
+
+                    return "rotate(" + ((angle > 45 && angle < 270) ? 180 : 0) + ")"
+
+                }).append('text').text(function(d,i){
+                    index = $(d3.select(this).node().parentNode).attr("index")
+                    var angle = (360/that.paperTitles.length)*index;
+
+                    var text = d
+                    var len = 20;
+
+                    if(text.length < len) {
+                        var oldLen = text.length;
+                        for(i=0;i<(len - oldLen + 3);i++){
+                            text = (angle > 45 && angle < 270)? (text+"."):("."+text);
+                        }
+                    } else {
+                        text = text.substr(0,len)
+                        text = (angle > 45 && angle < 270)? (text+"..."):("..."+text);
+                    }
+
+                    return text;
+                })
+
+
         })
-        .style("font-size","12")
+        .style("font-size","12pt")
         .attr("text-anchor", "middle")
         .attr("class","paper")
-        .style("fill","#000")
+        .style("fill","#000");
 
     return this.bubble;
+/*
 
+ */
 
 }
