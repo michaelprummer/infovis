@@ -126,7 +126,7 @@ AuthorBubble = function(options){
 //
         .attr("transform", function(d, i) {
             var angle = (360/that.paperTitles.length)*i;
-            var r = 450;
+            var r = 250;
 
             var cx = (that.width/2 - 100)
             var cy = (that.height/2 - 100)
@@ -137,7 +137,18 @@ AuthorBubble = function(options){
             return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
         })
         .text(function(d,i){
-            return d;
+            var text = d
+            var len = 10;
+            if(text.length < len) {
+                var oldLen = text.length;
+                for(i=0;i<(len - oldLen + 3);i++){
+                    text= "." + text;
+                }
+            } else {
+                text = text.substr(0,20)
+                text+="..."
+            }
+            return text;
         })
         .attr("text-anchor", "middle")
         .attr("class","paper")
