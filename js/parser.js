@@ -50,6 +50,7 @@ Parser = function(opts){
             success: function(data,status,xhr) {
                 ret = data;
                 $("#" + canvasId).removeClass("loading");
+                $(that.svg[0]).empty();
 
 
                 var bubble;
@@ -69,7 +70,7 @@ Parser = function(opts){
                                 var options = {papers: data, author: realAuthorname, svg: that.svg,id:i};
                                 bubble = new AuthorBubble(options);
 
-
+                                $(".paper").tooltip();
 
                             }
 

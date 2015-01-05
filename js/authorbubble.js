@@ -69,7 +69,7 @@ AuthorBubble = function(options){
             .innerRadius(innerRadius)
             .outerRadius(outerRadius);
 
-        var pie = d3.layout.pie().value(function(d){return d;});
+        var pie = d3.layout.pie().sort(null).value(function(d){return d;});
 
 
         //Set up groups
@@ -142,12 +142,14 @@ AuthorBubble = function(options){
             return that.paperTitles[i].toString();
         })
         .attr("transform", function(d, i) {
-            var angle = (360/that.paperTitles.length)*i;
+            var angle = (360/that.paperTitles.length)*i-85;
             var r = 220;
 
             var cx = (that.width/2 - 100);
             var cy = (that.height/2 - 100);
+            if(angle > 180){
 
+            }
             var x = cx + r *Math.cos(angle*0.0174532925);
             var y = cy + r *Math.sin(angle*0.0174532925);
 
