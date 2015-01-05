@@ -6,11 +6,13 @@ AuthorBubble = function(options){
     this.papers = options["papers"];
     this.authorname = options["author"];
     this.svg = options['svg'];
+    this.from = options['from'];
+    this.to = options['to'];
     var that = this;
     this.data={author: this.authorname, papers:{}};
     this.yearLabels = [];
     this.yearPaperCount = [];
-    this.paperTitles = {};
+    this.paperTitles = [];
     this.detailView = false;
 
     AuthorBubble.prototype.showDetails = function(){
@@ -19,8 +21,8 @@ AuthorBubble = function(options){
     AuthorBubble.prototype.listPapers = function(){
         ret = [];
         for (var i = 0; i < this.papers.length; i++) {
-            for (var j = 0; j < this.papers[i].length; j++) {
-                ret.push(this.papers[i].elements[j]);
+            for (var j = 0; j < this.papers[i].elements.length; j++) {
+                ret.push(this.papers[i].elements[j].title);
             }
         }
         return ret;
@@ -29,16 +31,11 @@ AuthorBubble = function(options){
     AuthorBubble.prototype.createD3Data = function(){
         for (var i = 0; i < this.papers.length; i++) {
             this.yearLabels.push(this.papers[i].year);
-            this.data.papers[this.papers[i].year] = [];
+
             this.yearPaperCount.push(this.papers[i].elements.length);
-            for (var j = 0; j < this.papers[i].elements.length; j++) {
-                this.data.papers[this.papers[i].year] = [];
-
-                    this.paperTitles[this.papers[i].elements[j].title]= this.papers[i].year;
-
-            }
-            //console.log(this.paperTitles);
         }
+        this.paperTitles = this.listPapers();
+
     }
     //console.log(this.yearPaperCount);
 
@@ -66,9 +63,9 @@ AuthorBubble = function(options){
 
         //Set up groups
         var arcs = activityPie.selectAll("g.activityArc")
-            .data(function(d,i){
-                return pie(Object.keys(that.papers[i].elements));
-            })
+            .data(
+                pie(that.yearPaperCount)
+            )
             .enter()
             .append("g")
             .attr("class", "activityArc")
@@ -119,20 +116,27 @@ AuthorBubble = function(options){
     var paperFan = this.bubble.append("g").attr("class","paperFan");
 
     paperFan.selectAll("text")
-        .data(this.listPapers())
-        .append("text").attr("class","paper")
-        .style("font-size",20)
+        .data(that.paperTitles)
+        .enter()
+        .append("text")
+        .text(function(d,i){
+            return d;
+        })
+        .attr("text-anchor", "middle")
+        .attr("dx",w/2)
+        .attr("dy",h/2)
+        .attr("class","paper")
+        .style("fill","#ffffff")
         .append("textPath")
-        .attr("textLength",function(d,i){return 90-i*5 ;})
+        //.attr("textLength",function(d,i){return 5 ;})
         .attr("xlink:href",function(d,i){return "#s"+i;})
         .attr("startOffset",function(d,i){
-            return "i dont know!";
+            pie(that.yearPaperCount[i]);
         })
         .attr("dy","-1em")
         .text(function(d,i){
             return that.paperTitles.keys[i];
         })
-
     return this.bubble;
 
 
