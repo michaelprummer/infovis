@@ -17,6 +17,7 @@ AuthorBubble = function(options){
     this.width = $("#svg-container").attr("width");
     this.height = $("#svg-container").attr("height");
 
+
     AuthorBubble.prototype.showDetails = function(){
         this.detailView = !this.detailView;
         if(this.detailView == false){
@@ -51,7 +52,7 @@ AuthorBubble = function(options){
 
     this.createD3Data();
 
-    console.log("creating author bubble with name: "+this.authorname);
+//    console.log("creating author bubble with name: "+this.authorname);
     this.bubble = this.svg.append("g").attr("transform", "translate(" + 0 + "," + 0 + ")").attr("class","authorBubble");
 
 
@@ -125,6 +126,7 @@ AuthorBubble = function(options){
             .attr("class","authorname")
             .style("fill","#ffffff");
 
+
     //PAPERS not working
     function paper(d,i){
         return d[i];
@@ -132,28 +134,44 @@ AuthorBubble = function(options){
 
     this.paperFan = this.bubble.append("g").attr("class","paperFan");
 
-    this.paperFan.selectAll("text")
-        .data(that.paperTitles,paper)
-        .enter()
-        .append("text")
-        .text(function(d,i){
-            return d;
+    this. paperFan.selectAll("text")
+        .data(that.paperTitles)
+        .enter().append("text")
+        .attr("transform", "translate(" + (this.width/2-innerRadius) + "," + (this.width/2-innerRadius) +") rotate(90)")
+        .attr("title",function(d,i){
+            return that.paperTitles[i].toString();
         })
-        .attr("dx",this.width/2 - innerRadius)
-        .attr("dy",this.height/2 - innerRadius)
-        .style("font-size","10")
+        .attr("transform", function(d, i) {
+            var angle = (360/that.paperTitles.length)*i;
+            var r = 220;
+
+            var cx = (that.width/2 - 100);
+            var cy = (that.height/2 - 100);
+
+            var x = cx + r *Math.cos(angle*0.0174532925);
+            var y = cy + r *Math.sin(angle*0.0174532925);
+
+            return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
+        })
+        .text(function(d,i){
+            var text = d
+            var len = 10;
+            if(text.length < len) {
+                var oldLen = text.length;
+                for(i=0;i<(len - oldLen + 3);i++){
+                    text= "." + text;
+                }
+            } else {
+                text = text.substr(0,20)
+                text+="..."
+            }
+            return text;
+        })
+        .style("font-size","12")
+        .attr("text-anchor", "middle")
         .attr("class","paper")
-        .style("fill","#000000")
-        .append("textPath")
-        //.attr("textLength",function(d,i){return 5 ;})
-        .attr("xlink:href",function(d,i){return "author"+that.id+"_section"+i;})
-        .attr("startOffset",function(d,i){
-            return i*2;
-        })
-        .attr("dy","-1em")
-        .text(function(d,i){
-            return that.paperTitles.keys[i];
-        })
+        .style("fill","#000")
+
     return this.bubble;
 
 
