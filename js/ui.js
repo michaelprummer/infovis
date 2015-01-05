@@ -11,6 +11,15 @@ $(document).ready(function(ev){
     //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
     // viewbox ist awesome für navigation in unserem graphen, eingebauter zoom + bildausschnitt
     var year = new Date().getFullYear();
+
+    var parser = new Parser({svg:svgContainer});
+    parser.addFilter({
+        year:{
+            from:year-5,
+            to:year
+        }
+    });
+
     $("button").button();
     $('#nav').tabs();
     $( "#yearSlider" ).slider({
@@ -31,13 +40,6 @@ $(document).ready(function(ev){
     $( "#amount" ).val(  $( "#yearSlider" ).slider( "values", 0 ) +
     " to " + $( "#yearSlider" ).slider( "values", 1 ) );
 
-    var parser = new Parser({svg:svgContainer});
-    parser.addFilter({
-        year:{
-            from:year-5,
-            to:year
-        }
-    });
 
     $("#searchAuthor").click(function(ev){
         ev.preventDefault();

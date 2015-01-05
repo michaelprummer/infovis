@@ -50,10 +50,7 @@ Parser = function(opts){
             success: function(data,status,xhr) {
                 ret = data;
                 $("#" + canvasId).removeClass("loading");
-                that.updateLocalData(data);
 
-                console.log("Api Call result:");
-                console.log(data);
 
                 var bubble;
                 if (that.options['name'] != null) {
@@ -62,6 +59,8 @@ Parser = function(opts){
                     var realAuthorname = "";
                     if (data.length > 0) {
                         data = that.filterData(data);
+                        console.log("Api Call result:");
+                        console.log(data);
 
                         for (var i = 0; i < data[0].elements[0].authors.length; i++) {
                             if (re.test(data[0].elements[0].authors[i].toLowerCase())) {
@@ -77,7 +76,8 @@ Parser = function(opts){
                     }
                 }
             }
-        }).fail(function(jqXHR, textStatus, errorThrown){
+
+    }).fail(function(jqXHR, textStatus, errorThrown){
             $("#canvas").removeClass("loading");
             $("#error").text(textStatus+":"+errorThrown);
             $("#error").fadeIn(200);
@@ -101,13 +101,6 @@ Parser = function(opts){
             }
         }
         return data;
-    }
-    Parser.prototype.updateLocalData = function (data){
-
-
-        // cache api call result
-        // data parameter can look like localdata {authors: {}, papers:{}, media:{}}
-        // check for every entry if it already exists in localdata and updates it otherwise create entries.
     }
 
 
