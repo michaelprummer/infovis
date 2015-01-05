@@ -7,12 +7,12 @@ AuthorBubble = function(options){
     this.id= options["id"];
     this.authorname = options["author"];
     this.svg = options['svg'];
-    var that = this;
     this.data={author: this.authorname, papers:{}};
     this.yearLabels = [];
     this.yearPaperCount = [];
     this.paperTitles = [];
     this.detailView = true;
+    var that = this;
 
     this.width = $("#svg-container").attr("width");
     this.height = $("#svg-container").attr("height");
@@ -136,43 +136,55 @@ AuthorBubble = function(options){
 
     this. paperFan.selectAll("text")
         .data(that.paperTitles)
-        .enter().append("text")
+        .enter().append("g")
         .attr("transform", "translate(" + (this.width/2-innerRadius) + "," + (this.width/2-innerRadius) +") rotate(90)")
-        .attr("title",function(d,i){
+        .attr("title", function(d,i){
             return that.paperTitles[i].toString();
         })
         .attr("transform", function(d, i) {
             var angle = (360/that.paperTitles.length)*i;
+            this.currentAngle = angle;
+
             var r = 220;
-
             var cx = (that.width/2 - 100);
-            var cy = (that.height/2 - 100);
 
+            var cy = (that.height/2 - 100);
             var x = cx + r *Math.cos(angle*0.0174532925);
             var y = cy + r *Math.sin(angle*0.0174532925);
-
             return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
         })
-        .text(function(d,i){
-            var text = d
-            var len = 10;
-            if(text.length < len) {
-                var oldLen = text.length;
-                for(i=0;i<(len - oldLen + 3);i++){
-                    text= "." + text;
-                }
-            } else {
-                text = text.substr(0,20)
-                text+="..."
-            }
-            return text;
+        .each(function(d, i) {
+            d3.select(this)
+                .append('g') // append text inside the group
+                .attr("transform", function(d) {
+                    var angle = (360/that.paperTitles.length)*i;
+                    return "rotate(" + ((angle > 45 && angle < 270) ? 180 : 0) + ")"
+
+                }).append('text').text(function(d,i){
+                    var text = d
+                    var len = 10;
+                    if(text.length < len) {
+                        var oldLen = text.length;
+                        for(i=0;i<(len - oldLen + 3);i++){
+                            text= "." + text;
+                        }
+                    } else {
+                        text = text.substr(0,20)
+                        text+="..."
+                    }
+                    return text;
+                })
+
+
         })
         .style("font-size","12")
         .attr("text-anchor", "middle")
         .attr("class","paper")
-        .style("fill","#000")
+        .style("fill","#000");
 
     return this.bubble;
+/*
 
+ */
 
 }
