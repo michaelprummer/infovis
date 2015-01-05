@@ -145,7 +145,7 @@ AuthorBubble = function(options){
             var angle = (360/that.paperTitles.length)*i;
             this.currentAngle = angle;
 
-            var r = 220;
+            var r = 240;
             var cx = (that.width/2 - 100);
 
             var cy = (that.height/2 - 100);
@@ -156,28 +156,35 @@ AuthorBubble = function(options){
         .each(function(d, i) {
             d3.select(this)
                 .append('g') // append text inside the group
+                .attr("index", i)
                 .attr("transform", function(d) {
                     var angle = (360/that.paperTitles.length)*i;
+
                     return "rotate(" + ((angle > 45 && angle < 270) ? 180 : 0) + ")"
 
                 }).append('text').text(function(d,i){
+                    index = $(d3.select(this).node().parentNode).attr("index")
+                    var angle = (360/that.paperTitles.length)*index;
+
                     var text = d
-                    var len = 10;
+                    var len = 20;
+
                     if(text.length < len) {
                         var oldLen = text.length;
                         for(i=0;i<(len - oldLen + 3);i++){
-                            text= "." + text;
+                            text = (angle > 45 && angle < 270)? (text+"."):("."+text);
                         }
                     } else {
-                        text = text.substr(0,20)
-                        text+="..."
+                        text = text.substr(0,len)
+                        text = (angle > 45 && angle < 270)? (text+"..."):("..."+text);
                     }
+
                     return text;
                 })
 
 
         })
-        .style("font-size","12")
+        .style("font-size","11pt")
         .attr("text-anchor", "middle")
         .attr("class","paper")
         .style("fill","#000");
