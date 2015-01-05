@@ -1,12 +1,13 @@
 $(document).ready(function(ev){
     $('#error').hide();
-    var width = 600;
+    var width = 1000;
     var height = 800;
     var canvasId="canvas";
     var canvas = d3.select("#canvas");
     var svgContainer = canvas.append("svg")
-        .attr("width", 600)
-        .attr("height", 600);
+        .attr("width", 1000)
+        .attr("height", 800)
+        .attr("id", "svg-container")
     //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
     // viewbox ist awesome für navigation in unserem graphen, eingebauter zoom + bildausschnitt
     var year = new Date().getFullYear();
@@ -139,4 +140,11 @@ $(document).ready(function(ev){
     })
 
 
+    /****************************
+     *          TEST            *
+     ****************************/
+    options = {};
+    options["name"] = $('#name').val();
+    options["paper"] = $('#paper').val();
+    parser.callApi(options);
 })
