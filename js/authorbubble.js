@@ -137,46 +137,42 @@ AuthorBubble = function(options){
     this. paperFan.selectAll("text")
         .data(that.paperTitles)
         .enter().append("g")
-        .attr("transform", "translate(" + (this.width/2-innerRadius) + "," + (this.width/2-innerRadius) +") rotate(90)")
         .attr("title", function(d,i){
             return that.paperTitles[i].toString();
         })
         .attr("transform", function(d, i) {
             var angle = (360/that.paperTitles.length)*i-85;
             this.currentAngle = angle;
-
             var r = 240;
             var cx = (that.width/2 - 100);
-
             var cy = (that.height/2 - 100);
             var x = cx + r *Math.cos(angle*0.0174532925);
             var y = cy + r *Math.sin(angle*0.0174532925);
             return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
         })
-        .each(function(d, i) {
+        .each(function(d, i){
             d3.select(this)
-                .append('g') // append text inside the group
+                .append('g')
                 .attr("index", i)
                 .attr("transform", function(d) {
                     var angle = (360/that.paperTitles.length)*i;
+                    return "rotate(" + ((angle > 130 && angle < 355) ? 180 : 0) + ")"
 
-                    return "rotate(" + ((angle > 45 && angle < 270) ? 180 : 0) + ")"
-
-                }).append('text').text(function(d,i){
-                    index = $(d3.select(this).node().parentNode).attr("index")
+                }).append('text').text(function(d, i){
+                    var index = $(d3.select(this).node().parentNode).attr("index");
                     var angle = (360/that.paperTitles.length)*index;
-
                     var text = d
                     var len = 20;
-
                     if(text.length < len) {
                         var oldLen = text.length;
+
                         for(i=0;i<(len - oldLen + 3);i++){
-                            text = (angle > 45 && angle < 270)? (text+"."):("."+text);
+                            text = (angle > 130 && angle < 355)? (text+"."):("."+text);
                         }
+
                     } else {
                         text = text.substr(0,len)
-                        text = (angle > 45 && angle < 270)? (text+"..."):("..."+text);
+                        text = (angle > 130 && angle < 355)? (text+"..."):("..."+text);
                     }
 
                     return text;
@@ -184,7 +180,7 @@ AuthorBubble = function(options){
 
 
         })
-        .style("font-size","12pt")
+        .style("font-size","11.5pt")
         .attr("text-anchor", "middle")
         .attr("class","paper")
         .style("fill","#000");
