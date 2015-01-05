@@ -4,10 +4,9 @@
 
 AuthorBubble = function(options){
     this.papers = options["papers"];
+    this.id= options["id"];
     this.authorname = options["author"];
     this.svg = options['svg'];
-    this.from = options['from'];
-    this.to = options['to'];
     var that = this;
     this.data={author: this.authorname, papers:{}};
     this.yearLabels = [];
@@ -21,8 +20,9 @@ AuthorBubble = function(options){
     AuthorBubble.prototype.listPapers = function(){
         ret = [];
         for (var i = 0; i < this.papers.length; i++) {
+            ret[i] = [];
             for (var j = 0; j < this.papers[i].elements.length; j++) {
-                ret.push(this.papers[i].elements[j].title);
+                ret[i].push(this.papers[i].elements[j].title);
             }
         }
         return ret;
@@ -74,6 +74,9 @@ AuthorBubble = function(options){
         //Draw arc paths
         arcs.append("path")
             .attr("d", arc)
+            .attr("id",function(d,i){
+                return "author"+that.id+"_section"+i;
+            })
             .attr("fill"    , function(d, i) {
             return color(i);
         });
@@ -122,16 +125,15 @@ AuthorBubble = function(options){
         .text(function(d,i){
             return d;
         })
-        .attr("text-anchor", "middle")
         .attr("dx",w/2)
         .attr("dy",h/2)
         .attr("class","paper")
-        .style("fill","#ffffff")
+        .style("fill","#000000")
         .append("textPath")
         //.attr("textLength",function(d,i){return 5 ;})
-        .attr("xlink:href",function(d,i){return "#s"+i;})
+        .attr("xlink:href",function(d,i){return "author"+that.id+"_section"+i;})
         .attr("startOffset",function(d,i){
-            pie(that.yearPaperCount[i]);
+            return i*2;
         })
         .attr("dy","-1em")
         .text(function(d,i){

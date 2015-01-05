@@ -66,7 +66,7 @@ Parser = function(opts){
                             if (re.test(data[0].elements[0].authors[i].toLowerCase())) {
                                 realAuthorname = data[0].elements[0].authors[i];
                                 console.log(author + " matches " + realAuthorname);
-                                var options = {papers: data, author: realAuthorname, svg: that.svg};
+                                var options = {papers: data, author: realAuthorname, svg: that.svg,id:i};
                                 bubble = new AuthorBubble(options);
 
 
