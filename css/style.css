@@ -92,7 +92,6 @@ input{
     font-size:12px;
 }
 
-
 .loading {
     background: url("../img/ajax-loader.gif") no-repeat #ffffff center center;
 }
@@ -101,12 +100,14 @@ input{
     background: url("../img/ajax-loader.gif") no-repeat #ffffff center center;
     position: absolute;
     width: 100%;
-    height:100%;
+    height: 100%;
 }
 
 body .ui-autocomplete {
     font-size: .8em;
 }
 
-#canvas {
+#svg-container {
+    border: #ccc 1px solid;
+    margin: 0px 5px;
 }
