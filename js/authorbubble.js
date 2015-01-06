@@ -148,9 +148,6 @@ AuthorBubble = function(options){
         .style("font-size", name_font_size);
 
 
-    if(!this.root){
-        namebadge.attr("transform","scale(0.5)")
-    }
 
     if(this.papers){
         this.createD3Data();
