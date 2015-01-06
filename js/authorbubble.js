@@ -56,7 +56,7 @@ AuthorBubble = function(options){
         this.outerRadius =  this.innerRadius +50;
 
     } else {
-        this.innerRadius = 50;
+        this.innerRadius = 30;
         this.outerRadius =  this.innerRadius+10;
     }
 
@@ -123,14 +123,29 @@ AuthorBubble = function(options){
         .attr("r",this.innerRadius)
         .attr("text-anchor", "middle")
 
+    var firstname = this.authorname.split(" ")[0]
+    var lastname = this.authorname.split(" ")[1]
+    var name_font_size = (this.root)?("11pt"):("15pt")
 
     namebadge.append("text")
-        .text(this.authorname)
+        .text(firstname)
         .attr("text-anchor", "middle")
         .attr("dx",this.canvasWidth/2)
-        .attr("dy",this.canvasHeight/2)
+        .attr("dy",this.canvasHeight/2-10)
         .attr("class","authorname")
-        .style("fill","#ffffff");
+        .style("fill","#b2f1ff")
+        .style("font-size", name_font_size);
+
+
+    namebadge.append("text")
+        .text(lastname)
+        .attr("text-anchor", "middle")
+        .attr("dx",this.canvasWidth/2)
+        .attr("dy",this.canvasHeight/2+10)
+        .attr("class","authorname")
+        .style("fill","#b2f1ff")
+        .style("font-size", name_font_size);
+
 
     if(!this.root){
         namebadge.attr("transform","scale(0.5)")
@@ -195,7 +210,7 @@ AuthorBubble = function(options){
             .attr("transform", function(d, i) {
                 var angle = (360/that.paperTitles.length)*i-85;
                 this.currentAngle = angle;
-                var r = 240;
+                var r = that.outerRadius + 80;
                 var cx = (that.canvasWidth/2);
                 var cy = (that.canvasHeight/2);
                 var x = cx + r *Math.cos(angle*0.0174532925);
