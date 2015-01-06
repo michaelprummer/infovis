@@ -3,17 +3,20 @@
  */
 
 Parser = function(opts){
+    var that = this;
     var CONTENTMODE_JSON = 1;
     var CONTENTMODE_HTML = 2;
     var url = "apiCallLMU.php";
     var canvasId="canvas";
     var canvas = d3.select(canvasId);
     var isDone = false;
+
     this.svg =opts["svg"];
+    this.layouter = opts["layouter"];
+
     this.filter = {};
     //var localData = {authors: {}, papers:{}, media:{}};
 
-    var that = this;
     // methods if we had a nice structured database
     /*Parser.prototype.getAuthor = function(name,paper){}
     Parser.prototype.getAuthors= function (paper){}
@@ -67,8 +70,8 @@ Parser = function(opts){
                             if (re.test(data[0].elements[0].authors[i].toLowerCase())) {
                                 realAuthorname = data[0].elements[0].authors[i];
                                 console.log(author + " matches " + realAuthorname);
-                                var options = {papers: data, author: realAuthorname, svg: that.svg,id:i};
-                                bubble = new AuthorBubble(options);
+                                var options = {papers: data, author: realAuthorname, svg: that.svg,root: that.options.hasOwnProperty("root") ? that.options["root"] : false};
+                                that.layouter.generateRootBubble(options);
 
                                 $(".paper").tooltip();
 
