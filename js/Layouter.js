@@ -38,14 +38,15 @@ Layouter = function(opts){
                 }
             }
         }
-        console.log("missing authors:");
-        console.log(missingauthors);
+        //onsole.log("missing authors:");
+        //console.log(missingauthors);
         // generate their bubbles
+
         for (var k = 0; k < missingauthors.length; k++) {
             var angle = (360/missingauthors.length)*k-85;
-            var cx = (this.width/2);
-            var cy = (this.height/2);
-            var r = 450;
+            var cx = bubble.canvasWidth/4;
+            var cy = bubble.canvasHeight/4;
+            var r = 370;
             var x = cx + r *Math.cos(angle*0.0174532925);
             var y = cy + r *Math.sin(angle*0.0174532925);
 

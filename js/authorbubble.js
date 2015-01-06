@@ -16,7 +16,7 @@ AuthorBubble = function(options){
     this.authorname = options.hasOwnProperty("author") ? options["author"] : "Max Mustermann";
     this.x = options.hasOwnProperty("x") ? options.x : 0;
     this.y = options.hasOwnProperty("y") ? options.y : 0;
-    this.width = options.hasOwnProperty("width") ? options.width : 300; // Unused
+    this.width = options.hasOwnProperty("width") ? options.width : 300; // Unused cause of dynamic size
     this.height = options.hasOwnProperty("height") ? options.height : 300;
 
     // UI variables
@@ -36,7 +36,7 @@ AuthorBubble = function(options){
 
     this.papers_count = 0;
     if(this.papers && this.root){
-        for(i=0;i<this.papers.length;i++){
+        for(var i=0;i<this.papers.length;i++){
             this.papers_count += this.papers[i]["elements"].length;
         }
 
@@ -202,13 +202,12 @@ AuthorBubble = function(options){
                         var angle = (360/that.paperTitles.length)*index;
                         var text = d
                         var len = 20;
+
                         if(text.length < len) {
                             var oldLen = text.length;
-
                             for(i=0;i<(len - oldLen + 3);i++){
                                 text = (angle > 130 && angle < 355)? (text+"."):("."+text);
                             }
-
                         } else {
                             text = text.substr(0,len)
                             text = (angle > 130 && angle < 355)? (text+"..."):("..."+text);
