@@ -109,14 +109,29 @@ AuthorBubble = function(options){
         .attr("r",this.innerRadius)
         .attr("text-anchor", "middle")
 
+    var firstname = this.authorname.split(" ")[0]
+    var lastname = this.authorname.split(" ")[1]
+    var name_font_size = (this.root)?("11pt"):("17pt")
 
     namebadge.append("text")
-        .text(this.authorname)
+        .text(firstname)
         .attr("text-anchor", "middle")
         .attr("dx",this.canvasWidth/2)
-        .attr("dy",this.canvasHeight/2)
+        .attr("dy",this.canvasHeight/2-10)
         .attr("class","authorname")
-        .style("fill","#ffffff");
+        .style("fill","#b2f1ff")
+        .style("font-size", name_font_size);
+
+
+    namebadge.append("text")
+        .text(lastname)
+        .attr("text-anchor", "middle")
+        .attr("dx",this.canvasWidth/2)
+        .attr("dy",this.canvasHeight/2+10)
+        .attr("class","authorname")
+        .style("fill","#b2f1ff")
+        .style("font-size", name_font_size);
+
 
     if(!this.root){
         namebadge.attr("transform","scale(0.5)")
