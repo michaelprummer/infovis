@@ -8,11 +8,14 @@ $(document).ready(function(ev){
         .attr("width", 1000)
         .attr("height", 1000)
         .attr("id", "svg-container")
+
     //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
     // viewbox ist awesome für navigation in unserem graphen, eingebauter zoom + bildausschnitt
     var year = new Date().getFullYear();
+    var layouter = new Layouter({svg:svgContainer,width:width,height:height});
+    var parser = new Parser({svg:svgContainer,layouter:layouter});
+    layouter.setParser(parser);
 
-    var parser = new Parser({svg:svgContainer});
     parser.addFilter({
         year:{
             from:year-5,
@@ -22,6 +25,9 @@ $(document).ready(function(ev){
 
     $("button").button();
     $('#nav').tabs();
+    $("svg").bind("DOMMouseScroll",function(ev){
+
+    });
     $( "#yearSlider" ).slider({
         range: true,
         min: year-20,
