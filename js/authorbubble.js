@@ -4,8 +4,11 @@
 
 AuthorBubble = function(options){
     var that = this;
+    // Canvas size
+    this.canvasWidth = $("#svg-container").attr("width");
+    this.canvasHeight = $("#svg-container").attr("height");
 
-    //options
+    // Options
     this.papers = options.hasOwnProperty("papers") ? options["papers"] : null;
     this.svg = options['svg'];
     this.root = options['root'];
@@ -13,21 +16,28 @@ AuthorBubble = function(options){
     this.authorname = options.hasOwnProperty("author") ? options["author"] : "Max Mustermann";
     this.x = options.hasOwnProperty("x") ? options.x : 0;
     this.y = options.hasOwnProperty("y") ? options.y : 0;
-    this.width = options.hasOwnProperty("width") ? options.width : 300;
+    this.width = options.hasOwnProperty("width") ? options.width : 300; // Unused cause of dynamic size
     this.height = options.hasOwnProperty("height") ? options.height : 300;
 
-    //ui variables
+    // UI variables
     this.detailView = this.root ? true :false;
 
-
-    // data
+    // Data
     this.data={author: this.authorname, papers:{}};
     this.yearLabels = [];
     this.yearPaperCount = [];
     this.paperTitles = [];
+    this.papers_count = 0;
+
+    this.innerRadius;
+    this.outerRadius;
+
+    Number.prototype.clamp = function(min, max) {
+        return Math.min(Math.max(this, min), max);
+    };
 
     AuthorBubble.prototype.getPaperPosition = function(id){
-        var angle = (360/that.paperTitles.length)*parseInt(id)-85;
+        var angle = (360/this.papers_count)*parseInt(id);
         var r = 250;
         var cx = (that.width/2 - 100);
         var cy = (that.height/2 - 100);
@@ -36,6 +46,23 @@ AuthorBubble = function(options){
         return [x,y];
 
     }
+
+    if(this.papers && this.root){
+        for(var i=0;i<this.papers.length;i++){
+            this.papers_count += this.papers[i]["elements"].length;
+        }
+
+        this.innerRadius = (this.papers_count*3.5).clamp(50,200);
+        this.outerRadius =  this.innerRadius +50;
+
+    } else {
+        this.innerRadius = 50;
+        this.outerRadius =  this.innerRadius+10;
+    }
+
+    Number.prototype.clamp = function(min, max) {
+        return Math.min(Math.max(this, min), max);
+    };
 
     AuthorBubble.prototype.showDetails = function(){
         this.detailView = !this.detailView;
@@ -68,14 +95,11 @@ AuthorBubble = function(options){
     }
 
     var monochrome = d3.scale.ordinal().range(["#01EC6A","#1DF47D","#60FDA6","#91FDC1","#CEFEE3","#F7FEFA"]);
-    var w = 300;
-    var h = 300;
-    var outerRadius = w / 2;
-    var innerRadius = 100;
     var color= monochrome;
 
 
     //console.log(this.yearPaperCount);
+
     this.bubble = this.svg.append("g").attr("transform", "translate(" + this.x + "," + this.y + ")").attr("id","bubble"+this.id).attr("class","authorBubble");
 
     // AUTHOR NAME =>CLICKABLE?
@@ -89,24 +113,25 @@ AuthorBubble = function(options){
             });
         }else{
             //make root and new call
+            namebadge.on("mouseover",function(ev){})
         }
-
 
     namebadge.append("circle")
         .style("fill", "green")
-        .attr("cx",this.width/2 - innerRadius)
-        .attr("cy",this.height/2 - innerRadius)
-        .attr("r",this.width/2)
+        .attr("cx",this.canvasWidth/2)
+        .attr("cy",this.canvasHeight/2)
+        .attr("r",this.innerRadius)
         .attr("text-anchor", "middle")
 
 
     namebadge.append("text")
         .text(this.authorname)
         .attr("text-anchor", "middle")
-        .attr("dx",this.width/2 - innerRadius)
-        .attr("dy",this.height/2 - innerRadius)
+        .attr("dx",this.canvasWidth/2)
+        .attr("dy",this.canvasHeight/2)
         .attr("class","authorname")
         .style("fill","#ffffff");
+
     if(!this.root){
         namebadge.attr("transform","scale(0.5)")
     }
@@ -115,15 +140,12 @@ AuthorBubble = function(options){
         this.createD3Data();
         console.log(this.papers);
 
-    // console.log("creating author bubble with name: "+this.authorname);
-
-
         // ACTIVITY PIE
         this.activityPie =  this.bubble.append("g").attr("class","activityPie");
 
             var arc = d3.svg.arc()
-                .innerRadius(innerRadius)
-                .outerRadius(outerRadius);
+                .innerRadius(this.innerRadius)
+                .outerRadius(this.outerRadius);
 
             var pie = d3.layout.pie().value(function(d){return d;});
 
@@ -136,7 +158,7 @@ AuthorBubble = function(options){
                 .enter()
                 .append("g")
                 .attr("class", "activityArc")
-                .attr("transform", "translate(" + (this.width/2 - innerRadius) + "," + (this.width/2 - innerRadius) + ")");
+                .attr("transform", "translate(" + (this.canvasWidth/2) + "," + (this.canvasHeight/2) + ")");
 
             //Draw arc paths
             arcs.append("path")
@@ -158,9 +180,6 @@ AuthorBubble = function(options){
                     return that.yearLabels[i];
                 });
 
-
-
-
         function paper(d,i){
             return d[i];
         }
@@ -177,13 +196,15 @@ AuthorBubble = function(options){
                 var angle = (360/that.paperTitles.length)*i-85;
                 this.currentAngle = angle;
                 var r = 240;
-                var cx = (that.width/2 - 100);
-                var cy = (that.height/2 - 100);
+                var cx = (that.canvasWidth/2);
+                var cy = (that.canvasHeight/2);
                 var x = cx + r *Math.cos(angle*0.0174532925);
                 var y = cy + r *Math.sin(angle*0.0174532925);
                 return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
             })
+
             .each(function(d, i){
+
                 d3.select(this)
                     .append('g')
                     .attr("index", i)
@@ -196,13 +217,12 @@ AuthorBubble = function(options){
                         var angle = (360/that.paperTitles.length)*index;
                         var text = d
                         var len = 20;
+
                         if(text.length < len) {
                             var oldLen = text.length;
-
                             for(i=0;i<(len - oldLen + 3);i++){
                                 text = (angle > 130 && angle < 355)? (text+"."):("."+text);
                             }
-
                         } else {
                             text = text.substr(0,len)
                             text = (angle > 130 && angle < 355)? (text+"..."):("..."+text);
@@ -210,8 +230,6 @@ AuthorBubble = function(options){
 
                         return text;
                     })
-
-
             })
             .style("font-size","11.5pt")
             .attr("text-anchor", "middle")
@@ -222,13 +240,7 @@ AuthorBubble = function(options){
             this.paperFan.attr("opacity",0);
             this.activityPie.attr("opacity",0);
         }
+
     }
-
-
-
     return this;
-/*
-
- */
-
 }

@@ -16,8 +16,8 @@ Layouter = function(opts){
     Layouter.prototype.generateRootBubble = function(opts){
         opts["id"] = this.currentId;
         opts["root"] = true;
-        opts["x"] = this.width/2;
-        opts["y"] = this.height/2;
+        opts["x"] = 0;
+        opts["y"] = 0;
         var bubble = new AuthorBubble(opts)
         this.bubbles[this.currentId] =bubble;
         this.rootId = this.currentId;
@@ -53,18 +53,20 @@ Layouter = function(opts){
         console.log("missing authors:");
         console.log(edges);
         // generate their bubbles
+
         for (var k = 0; k < missingauthors.length; k++) {
 
             var angle = (360/missingauthors.length)*k-85;
-            var cx = (this.width/2);
-            var cy = (this.height/2);
-            var r = 450;
+            var cx = bubble.canvasWidth/4;
+            var cy = bubble.canvasHeight/4;
+            var r = 370;
             var x = cx + r *Math.cos(angle*0.0174532925);
             var y = cy + r *Math.sin(angle*0.0174532925);
 
             opts.author = missingauthors[k];
             opts.x = x;
             opts.y = y;
+            opts.root = false;
             opts.width= 150;
             opts.height = 150;
             opts.papers = null;
@@ -77,10 +79,11 @@ Layouter = function(opts){
                 var pointPaper = this.bubbles[this.rootId].getPaperPosition(paperid);
                 var pointAuthor = [x,y];
                 this.svg.append("line")
-                    .attr("x1",pointPaper[0])
-                    .attr("y1",pointPaper[1])
-                    .attr("x2",pointAuthor[0])
-                    .attr("y2",pointAuthor[1])
+                    .attr("x1",pointPaper[0]+this.width/2-100)
+                    .attr("y1",pointPaper[1]+this.height/2-100)
+                    .attr("x2",pointAuthor[0]+this.width/2-100)
+                    .attr("y2",pointAuthor[1]+this.height/2-100)
+                    .style("stroke","#000")
 
             }
 
