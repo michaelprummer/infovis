@@ -6,7 +6,7 @@ AuthorBubble = function(options){
     var that = this;
 
     //options
-    this.papers = options.hasOwnProperty("papers") ? options.papers : null;
+    this.papers = options.hasOwnProperty("papers") ? options["papers"] : null;
     this.svg = options['svg'];
     this.root = options['root'];
     this.id= options["id"];

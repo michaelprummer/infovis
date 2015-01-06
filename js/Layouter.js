@@ -40,6 +40,7 @@ Layouter = function(opts){
         }
         console.log("missing authors:");
         console.log(missingauthors);
+        /**
         // generate their bubbles
         for (var k = 0; i < missingauthors.length; k++) {
             var angle = (360/missingauthors.length)*k-85;
@@ -54,11 +55,10 @@ Layouter = function(opts){
             opts.y = y;
             opts.width= 150;
             opts.height = 150;
-            bubble[this.currentId] = this.generateBubble(opts);
-            this.currentId++;
+            this.generateBubble(opts);
 
         }
-        /**
+
         for (var e = 0; e < edges.length; e++) {
             var obj = edges[e];
             d3.svg.line()
