@@ -4,6 +4,8 @@
 
 AuthorBubble = function(options){
     var that = this;
+    this.canvasWidth = $("#svg-container").attr("width");
+    this.canvasHeight = $("#svg-container").attr("height");
 
     //options
     this.papers = options.hasOwnProperty("papers") ? options["papers"] : null;
@@ -11,10 +13,10 @@ AuthorBubble = function(options){
     this.root = options['root'];
     this.id= options["id"];
     this.authorname = options.hasOwnProperty("author") ? options["author"] : "Max Mustermann";
-    this.x = options.hasOwnProperty("x") ? options.x : 0;
-    this.y = options.hasOwnProperty("y") ? options.y : 0;
-    this.width = options.hasOwnProperty("width") ? options.width : 300;
-    this.height = options.hasOwnProperty("height") ? options.height : 300;
+    this.x = options.hasOwnProperty("x") ? options.x : this.canvasWidth/2;
+    this.y = options.hasOwnProperty("y") ? options.y : this.canvasHeight/2;
+    //this.width = options.hasOwnProperty("width") ? options.width : 300;
+    //this.height = options.hasOwnProperty("height") ? options.height : 300;
 
     //ui variables
     this.detailView = this.root ? true :false;
@@ -26,7 +28,9 @@ AuthorBubble = function(options){
     this.yearPaperCount = [];
     this.paperTitles = [];
 
-
+    Number.prototype.clamp = function(min, max) {
+        return Math.min(Math.max(this, min), max);
+    };
 
     AuthorBubble.prototype.showDetails = function(){
         this.detailView = !this.detailView;
@@ -59,10 +63,10 @@ AuthorBubble = function(options){
     }
 
     var monochrome = d3.scale.ordinal().range(["#01EC6A","#1DF47D","#60FDA6","#91FDC1","#CEFEE3","#F7FEFA"]);
-    var w = 300;
-    var h = 300;
-    var outerRadius = w / 2;
-    var innerRadius = 100;
+
+    this.innerRadius = (this.paperTitles.length*1.5).clamp(40,200);
+    this.outerRadius =  this.innerRadius +50;
+
     var color= monochrome;
 
 
@@ -84,35 +88,30 @@ AuthorBubble = function(options){
 
     namebadge.append("circle")
         .style("fill", "green")
-        .attr("cx",this.width/2 - innerRadius)
-        .attr("cy",this.height/2 - innerRadius)
-        .attr("r",this.width/2)
+        .attr("cx",this.canvasWidth/2)
+        .attr("cy",this.canvasHeight/2)
+        .attr("r",this.innerRadius)
         .attr("text-anchor", "middle")
 
 
     namebadge.append("text")
         .text(this.authorname)
         .attr("text-anchor", "middle")
-        .attr("dx",this.width/2 - innerRadius)
-        .attr("dy",this.height/2 - innerRadius)
+        .attr("dx",this.canvasWidth/2)
+        .attr("dy",this.canvasHeight/2)
         .attr("class","authorname")
         .style("fill","#ffffff");
+
     if(!this.root){
         namebadge.attr("transform","scale(0.5)")
     }
-
-    if(this.papers != null){
-        this.createD3Data();
-
-    // console.log("creating author bubble with name: "+this.authorname);
-
 
         // ACTIVITY PIE
         this.activityPie =  this.bubble.append("g").attr("class","activityPie");
 
             var arc = d3.svg.arc()
-                .innerRadius(innerRadius)
-                .outerRadius(outerRadius);
+                .innerRadius(this.innerRadius)
+                .outerRadius(this.outerRadius);
 
             var pie = d3.layout.pie().value(function(d){return d;});
 
@@ -125,7 +124,7 @@ AuthorBubble = function(options){
                 .enter()
                 .append("g")
                 .attr("class", "activityArc")
-                .attr("transform", "translate(" + (this.width/2 - innerRadius) + "," + (this.width/2 - innerRadius) + ")");
+                .attr("transform", "translate(" + (this.canvasWidth/2) + "," + (this.canvasHeight/2) + ")");
 
             //Draw arc paths
             arcs.append("path")
@@ -147,9 +146,6 @@ AuthorBubble = function(options){
                     return that.yearLabels[i];
                 });
 
-
-
-
         function paper(d,i){
             return d[i];
         }
@@ -166,13 +162,15 @@ AuthorBubble = function(options){
                 var angle = (360/that.paperTitles.length)*i-85;
                 this.currentAngle = angle;
                 var r = 240;
-                var cx = (that.width/2 - 100);
-                var cy = (that.height/2 - 100);
+                var cx = (that.canvasWidth/2);
+                var cy = (that.canvasHeight/2);
                 var x = cx + r *Math.cos(angle*0.0174532925);
                 var y = cy + r *Math.sin(angle*0.0174532925);
                 return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
             })
+
             .each(function(d, i){
+
                 d3.select(this)
                     .append('g')
                     .attr("index", i)
