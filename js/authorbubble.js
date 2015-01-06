@@ -101,7 +101,7 @@ AuthorBubble = function(options){
         namebadge.attr("transform","scale(0.5)")
     }
 
-    if(this.papers != null){
+    if(this.papers){
         this.createD3Data();
 
     // console.log("creating author bubble with name: "+this.authorname);

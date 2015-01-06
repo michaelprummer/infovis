@@ -22,8 +22,8 @@ Layouter = function(opts){
         this.currentId++;
 
         // loop through co-authors
-        missingauthors = [];
-        edges = [];
+        var missingauthors = [];
+        var edges = [];
 
         for (var i = 0; i < bubble.papers.length; i++) {
             for (var j = 0; j < bubble.papers[i].elements.length; j++) {
@@ -31,7 +31,7 @@ Layouter = function(opts){
                     if(!(bubble.papers[i].elements[j].authors[k] == bubble.authorname)){
                         if($.inArray(bubble.papers[i].elements[j].authors[k],missingauthors) == -1){
                             missingauthors.push(bubble.papers[i].elements[j].authors[k]);
-                            edges.push([i,this.currentId]);
+                            //edges.push([i,this.currentId]);
 
                         }
                     }
@@ -40,9 +40,8 @@ Layouter = function(opts){
         }
         console.log("missing authors:");
         console.log(missingauthors);
-        /**
         // generate their bubbles
-        for (var k = 0; i < missingauthors.length; k++) {
+        for (var k = 0; k < missingauthors.length; k++) {
             var angle = (360/missingauthors.length)*k-85;
             var cx = (this.width/2);
             var cy = (this.height/2);
@@ -55,9 +54,11 @@ Layouter = function(opts){
             opts.y = y;
             opts.width= 150;
             opts.height = 150;
+            opts.papers = null;
             this.generateBubble(opts);
 
         }
+        /**
 
         for (var e = 0; e < edges.length; e++) {
             var obj = edges[e];
