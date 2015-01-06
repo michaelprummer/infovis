@@ -4,29 +4,49 @@
 
 AuthorBubble = function(options){
     var that = this;
+    // Canvas size
     this.canvasWidth = $("#svg-container").attr("width");
     this.canvasHeight = $("#svg-container").attr("height");
 
-    //options
+    // Options
     this.papers = options.hasOwnProperty("papers") ? options["papers"] : null;
     this.svg = options['svg'];
     this.root = options['root'];
     this.id= options["id"];
     this.authorname = options.hasOwnProperty("author") ? options["author"] : "Max Mustermann";
-    this.x = options.hasOwnProperty("x") ? options.x : this.canvasWidth/2;
-    this.y = options.hasOwnProperty("y") ? options.y : this.canvasHeight/2;
-    //this.width = options.hasOwnProperty("width") ? options.width : 300;
-    //this.height = options.hasOwnProperty("height") ? options.height : 300;
+    this.x = options.hasOwnProperty("x") ? options.x : 0;
+    this.y = options.hasOwnProperty("y") ? options.y : 0;
+    this.width = options.hasOwnProperty("width") ? options.width : 300; // Unused
+    this.height = options.hasOwnProperty("height") ? options.height : 300;
 
-    //ui variables
+    // UI variables
     this.detailView = this.root ? true :false;
 
-
-    // data
+    // Data
     this.data={author: this.authorname, papers:{}};
     this.yearLabels = [];
     this.yearPaperCount = [];
     this.paperTitles = [];
+    this.innerRadius;
+    this.outerRadius;
+
+    Number.prototype.clamp = function(min, max) {
+        return Math.min(Math.max(this, min), max);
+    };
+
+    this.papers_count = 0;
+    if(this.papers && this.root){
+        for(i=0;i<this.papers.length;i++){
+            this.papers_count += this.papers[i]["elements"].length;
+        }
+
+        this.innerRadius = (this.papers_count*3.5).clamp(50,200);
+        this.outerRadius =  this.innerRadius +50;
+
+    } else {
+        this.innerRadius = 50;
+        this.outerRadius =  this.innerRadius+10;
+    }
 
     Number.prototype.clamp = function(min, max) {
         return Math.min(Math.max(this, min), max);
@@ -63,14 +83,11 @@ AuthorBubble = function(options){
     }
 
     var monochrome = d3.scale.ordinal().range(["#01EC6A","#1DF47D","#60FDA6","#91FDC1","#CEFEE3","#F7FEFA"]);
-
-    this.innerRadius = (this.paperTitles.length*1.5).clamp(40,200);
-    this.outerRadius =  this.innerRadius +50;
-
     var color= monochrome;
 
 
     //console.log(this.yearPaperCount);
+
     this.bubble = this.svg.append("g").attr("transform", "translate(" + this.x + "," + this.y + ")").attr("id","bubble"+this.id).attr("class","authorBubble");
 
     // AUTHOR NAME =>CLICKABLE?
@@ -84,7 +101,6 @@ AuthorBubble = function(options){
         }else{
             //make root and new call
         }
-
 
     namebadge.append("circle")
         .style("fill", "green")
@@ -105,6 +121,9 @@ AuthorBubble = function(options){
     if(!this.root){
         namebadge.attr("transform","scale(0.5)")
     }
+
+    if(this.papers){
+        this.createD3Data();
 
         // ACTIVITY PIE
         this.activityPie =  this.bubble.append("g").attr("class","activityPie");
@@ -197,8 +216,6 @@ AuthorBubble = function(options){
 
                         return text;
                     })
-
-
             })
             .style("font-size","11.5pt")
             .attr("text-anchor", "middle")
@@ -209,13 +226,7 @@ AuthorBubble = function(options){
             this.paperFan.attr("opacity",0);
             this.activityPie.attr("opacity",0);
         }
+
     }
-
-
-
     return this;
-/*
-
- */
-
 }
