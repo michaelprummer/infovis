@@ -44,7 +44,7 @@ AuthorBubble = function(options){
         this.outerRadius =  this.innerRadius +50;
 
     } else {
-        this.innerRadius = 50;
+        this.innerRadius = 30;
         this.outerRadius =  this.innerRadius+10;
     }
 
@@ -111,7 +111,7 @@ AuthorBubble = function(options){
 
     var firstname = this.authorname.split(" ")[0]
     var lastname = this.authorname.split(" ")[1]
-    var name_font_size = (this.root)?("11pt"):("17pt")
+    var name_font_size = (this.root)?("11pt"):("15pt")
 
     namebadge.append("text")
         .text(firstname)
@@ -195,7 +195,7 @@ AuthorBubble = function(options){
             .attr("transform", function(d, i) {
                 var angle = (360/that.paperTitles.length)*i-85;
                 this.currentAngle = angle;
-                var r = 240;
+                var r = that.outerRadius + 80;
                 var cx = (that.canvasWidth/2);
                 var cy = (that.canvasHeight/2);
                 var x = cx + r *Math.cos(angle*0.0174532925);

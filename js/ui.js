@@ -1,12 +1,12 @@
 $(document).ready(function(ev){
     $('#error').hide();
-    var width = 1000;
-    var height = 1000;
+    var width = 1800;
+    var height = 1800;
     var canvasId="canvas";
     var canvas = d3.select("#canvas");
     var svgContainer = canvas.append("svg")
-        .attr("width", 1000)
-        .attr("height", 1000)
+        .attr("width", width)
+        .attr("height", height)
         .attr("id", "svg-container")
 
     //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
