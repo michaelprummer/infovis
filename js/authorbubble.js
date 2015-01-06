@@ -26,7 +26,16 @@ AuthorBubble = function(options){
     this.yearPaperCount = [];
     this.paperTitles = [];
 
+    AuthorBubble.prototype.getPaperPosition = function(id){
+        var angle = (360/that.paperTitles.length)*parseInt(id)-85;
+        var r = 250;
+        var cx = (that.width/2 - 100);
+        var cy = (that.height/2 - 100);
+        var x = cx + r *Math.cos(angle*0.0174532925);
+        var y = cy + r *Math.sin(angle*0.0174532925);
+        return [x,y];
 
+    }
 
     AuthorBubble.prototype.showDetails = function(){
         this.detailView = !this.detailView;
@@ -72,7 +81,8 @@ AuthorBubble = function(options){
     // AUTHOR NAME =>CLICKABLE?
     var namebadge = this.bubble
         .append("g")
-        .attr("class","name");
+        .attr("class","name")
+        .attr("id",this.authorname);
         if(this.root){
             namebadge.on("mousedown",function(){
                 that.showDetails();
@@ -103,6 +113,7 @@ AuthorBubble = function(options){
 
     if(this.papers){
         this.createD3Data();
+        console.log(this.papers);
 
     // console.log("creating author bubble with name: "+this.authorname);
 

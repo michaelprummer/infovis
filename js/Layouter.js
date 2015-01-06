@@ -8,7 +8,8 @@ Layouter = function(opts){
 
     this.parser= null;
     this.currentId = 0;
-    this.bubbles = {};
+    this.bubbles = [];
+    this.rootId = 0;
     this.authors = {};
 
 
@@ -19,29 +20,41 @@ Layouter = function(opts){
         opts["y"] = this.height/2;
         var bubble = new AuthorBubble(opts)
         this.bubbles[this.currentId] =bubble;
+        this.rootId = this.currentId;
         this.currentId++;
 
         // loop through co-authors
         var missingauthors = [];
-        var edges = [];
+        var edges = {};
+
+        var paperId = 0;
 
         for (var i = 0; i < bubble.papers.length; i++) {
             for (var j = 0; j < bubble.papers[i].elements.length; j++) {
+                paperId++;
                 for (var k = 0; k < bubble.papers[i].elements[j].authors.length; k++) {
-                    if(!(bubble.papers[i].elements[j].authors[k] == bubble.authorname)){
-                        if($.inArray(bubble.papers[i].elements[j].authors[k],missingauthors) == -1){
-                            missingauthors.push(bubble.papers[i].elements[j].authors[k]);
-                            //edges.push([i,this.currentId]);
+                    var author = bubble.papers[i].elements[j].authors[k];
+
+                    if(!(author == bubble.authorname)){
+                        if($.inArray(author,missingauthors) == -1){
+                            missingauthors.push(author);
+                            // Edge: [<papertitle>,<index in missingauthors>]
+                            edges[author] = [];
 
                         }
+                        if(edges.hasOwnProperty(author)){
+                            edges[author].push(paperId);
+                        }
+
                     }
                 }
             }
         }
         console.log("missing authors:");
-        console.log(missingauthors);
+        console.log(edges);
         // generate their bubbles
         for (var k = 0; k < missingauthors.length; k++) {
+
             var angle = (360/missingauthors.length)*k-85;
             var cx = (this.width/2);
             var cy = (this.height/2);
@@ -55,18 +68,28 @@ Layouter = function(opts){
             opts.width= 150;
             opts.height = 150;
             opts.papers = null;
+
             this.generateBubble(opts);
+            if(edges[opts.author]){console.log(edges[opts.author])}else{console.log("keine kante...")}
+            for (var l = 0; l < edges[opts.author].length; l++) {
+                var paperid = edges[opts.author][l];
+
+                var pointPaper = this.bubbles[this.rootId].getPaperPosition(paperid);
+                var pointAuthor = [x,y];
+                this.svg.append("line")
+                    .attr("x1",pointPaper[0])
+                    .attr("y1",pointPaper[1])
+                    .attr("x2",pointAuthor[0])
+                    .attr("y2",pointAuthor[1])
+
+            }
+
+
 
         }
-        /**
 
-        for (var e = 0; e < edges.length; e++) {
-            var obj = edges[e];
-            d3.svg.line()
-                .x(function(d) { return d.x; })
-                .y(function(d) { return d.y; })
-                .interpolate("basis");
-        }**/
+
+
 
         return bubble;
 
