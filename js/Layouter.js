@@ -27,11 +27,8 @@ Layouter = function(opts){
         var missingauthors = [];
         var edges = {};
 
-        var paperId = 0;
-
         for (var i = 0; i < bubble.papers.length; i++) {
             for (var j = 0; j < bubble.papers[i].elements.length; j++) {
-                paperId++;
                 for (var k = 0; k < bubble.papers[i].elements[j].authors.length; k++) {
                     var author = bubble.papers[i].elements[j].authors[k];
 
@@ -43,7 +40,7 @@ Layouter = function(opts){
 
                         }
                         if(edges.hasOwnProperty(author)){
-                            edges[author].push(paperId);
+                            edges[author].push(bubble.papers[i].elements[j].paper_index);
                         }
 
                     }
@@ -72,12 +69,14 @@ Layouter = function(opts){
             opts.papers = null;
 
             this.generateBubble(opts);
+            /*
             if(edges[opts.author]){console.log(edges[opts.author])}else{console.log("keine kante...")}
             for (var l = 0; l < edges[opts.author].length; l++) {
                 var paperid = edges[opts.author][l];
 
                 var pointPaper = this.bubbles[this.rootId].getPaperPosition(paperid);
                 var pointAuthor = [x,y];
+
                 this.svg.append("line")
                     .attr("x1",pointPaper[0]+this.width/2-100)
                     .attr("y1",pointPaper[1]+this.height/2-100)
@@ -86,16 +85,11 @@ Layouter = function(opts){
                     .style("stroke","#000")
 
             }
-
-
-
+             */
         }
-
-
-
-
+        console.log("----------------------------")
+        console.log(bubble.papers)
         return bubble;
-
     }
 
     Layouter.prototype.generateBubble = function(opts){
@@ -112,4 +106,7 @@ Layouter = function(opts){
     Layouter.prototype.setParser = function(parser) {
         this.parser = parser;
     }
+
+
+
 }

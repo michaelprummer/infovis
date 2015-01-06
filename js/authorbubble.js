@@ -47,6 +47,7 @@ AuthorBubble = function(options){
 
     }
 
+    // Count papers
     if(this.papers && this.root){
         for(var i=0;i<this.papers.length;i++){
             this.papers_count += this.papers[i]["elements"].length;
@@ -78,7 +79,7 @@ AuthorBubble = function(options){
         ret = [];
         for (var i = 0; i < this.papers.length; i++) {
             for (var j = 0; j < this.papers[i].elements.length; j++) {
-                ret.push(this.papers[i].elements[j].title);
+                ret.push({title: this.papers[i].elements[j].title, id: this.papers[i].elements[j].paper_index});
             }
         }
         return ret;
@@ -153,25 +154,18 @@ AuthorBubble = function(options){
 
     if(this.papers){
         this.createD3Data();
-        console.log(this.papers);
 
         // ACTIVITY PIE
         this.activityPie =  this.bubble.append("g").attr("class","activityPie");
+        var arc = d3.svg.arc()
+           .innerRadius(this.innerRadius)
+           .outerRadius(this.outerRadius);
 
-            var arc = d3.svg.arc()
-                .innerRadius(this.innerRadius)
-                .outerRadius(this.outerRadius);
+        var pie = d3.layout.pie().value(function(d){return d;});
 
-            var pie = d3.layout.pie().value(function(d){return d;});
-
-
-            //Set up groups
+        //Set up groups
             var arcs = this.activityPie.selectAll("g.activityArc")
-                .data(
-                    pie(that.yearPaperCount)
-                )
-                .enter()
-                .append("g")
+                .data(pie(that.yearPaperCount)).enter().append("g")
                 .attr("class", "activityArc")
                 .attr("transform", "translate(" + (this.canvasWidth/2) + "," + (this.canvasHeight/2) + ")");
 
@@ -201,11 +195,13 @@ AuthorBubble = function(options){
 
         this.paperFan = this.bubble.append("g").attr("class","paperFan");
 
+        var attrX;
+        var attrY;
         this. paperFan.selectAll("text")
             .data(that.paperTitles)
             .enter().append("g")
             .attr("title", function(d,i){
-                return that.paperTitles[i].toString();
+                return that.paperTitles[i].title.toString();
             })
             .attr("transform", function(d, i) {
                 var angle = (360/that.paperTitles.length)*i-85;
@@ -215,11 +211,17 @@ AuthorBubble = function(options){
                 var cy = (that.canvasHeight/2);
                 var x = cx + r *Math.cos(angle*0.0174532925);
                 var y = cy + r *Math.sin(angle*0.0174532925);
+
+                attrX = x;
+                attrY = y;
+
                 return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
             })
+            .attr("id", function(d) {return d.id})
+            .attr("x", attrX)
+            .attr("y", attrY)
 
             .each(function(d, i){
-
                 d3.select(this)
                     .append('g')
                     .attr("index", i)
@@ -230,7 +232,7 @@ AuthorBubble = function(options){
                     }).append('text').text(function(d, i){
                         var index = $(d3.select(this).node().parentNode).attr("index");
                         var angle = (360/that.paperTitles.length)*index;
-                        var text = d
+                        var text = d.title
                         var len = 20;
 
                         if(text.length < len) {

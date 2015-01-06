@@ -4,6 +4,7 @@ class Loader
     private $lmuApiResult;
     private $dblpApiResult;
     private $content_mode;
+    private $indexer = 0;
     const CONTENTMODE_JSON = 1;
     const CONTENTMODE_HTML = 2;
     const CONTENTMODE_RAW = 3;
@@ -151,7 +152,12 @@ class Loader
                                 }
                             }
                         }
+
+
                     }
+
+                    $json[count($json) - 1]["elements"][$query_counter]["paper_index"] = $this->indexer;
+                    $this->indexer++;
 
                     if ($this->content_mode == self::CONTENTMODE_HTML) {
                         if (count($this->lmuApiResult) > 0)
