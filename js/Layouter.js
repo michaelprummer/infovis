@@ -12,7 +12,6 @@ Layouter = function(opts){
     this.rootId = 0;
     this.authors = {};
 
-
     Layouter.prototype.generateRootBubble = function(opts){
         opts["id"] = this.currentId;
         opts["root"] = true;
@@ -57,8 +56,8 @@ Layouter = function(opts){
             var cx = bubble.canvasWidth/4;
             var cy = bubble.canvasHeight/4;
             var r = (bubble.papers_count*20).clamp(350, 900);
-            var x = cx + r *Math.cos(angle*0.0174532925);
-            var y = cy + r *Math.sin(angle*0.0174532925);
+            var x = cx + r * Math.cos(angle*0.0174532925);
+            var y = cy + r * Math.sin(angle*0.0174532925);
 
             opts.author = missingauthors[k];
             opts.x = x;
@@ -69,26 +68,43 @@ Layouter = function(opts){
             opts.papers = null;
 
             this.generateBubble(opts);
-            /*
-            if(edges[opts.author]){console.log(edges[opts.author])}else{console.log("keine kante...")}
+
+
+           // if(edges[opts.author]){console.log(edges[opts.author])}else{console.log("keine kante...")}
+
             for (var l = 0; l < edges[opts.author].length; l++) {
                 var paperid = edges[opts.author][l];
 
-                var pointPaper = this.bubbles[this.rootId].getPaperPosition(paperid);
-                var pointAuthor = [x,y];
+                /**
+                 * Paper Point
+                 */
+                // Sollte man irgendwie gleich als Attribut ablegen :D
+                var ele = $("g.paper[paper_id='" + paperid + "']");
+                ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
+                ele = ele.split(", ")
+                var pointPaper = [ele[0], ele[1]];
 
+                /**
+                 * Author Point
+                 */
+                var ele = $("g.paper[paper_id='" + paperid + "']");
+                //ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
+                //ele = ele.split(", ")
+                //var pointPaper = [ele[0], ele[1]];
+
+
+                var pointAuthor = [x + r/2 + opts.width, y + r/2 + opts.height];
+                console.log(x+", "+y)
                 this.svg.append("line")
-                    .attr("x1",pointPaper[0]+this.width/2-100)
-                    .attr("y1",pointPaper[1]+this.height/2-100)
-                    .attr("x2",pointAuthor[0]+this.width/2-100)
-                    .attr("y2",pointAuthor[1]+this.height/2-100)
-                    .style("stroke","#000")
+                    .attr("x1",pointPaper[0])
+                    .attr("y1",pointPaper[1])
+                    .attr("x2",pointAuthor[0])
+                    .attr("y2",pointAuthor[1])
+                    .style("stroke","#4A4A4A")
 
             }
-             */
         }
-        console.log("----------------------------")
-        console.log(bubble.papers)
+
         return bubble;
     }
 

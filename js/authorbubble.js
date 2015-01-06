@@ -192,8 +192,6 @@ AuthorBubble = function(options){
 
         this.paperFan = this.bubble.append("g").attr("class","paperFan");
 
-        var attrX;
-        var attrY;
         this. paperFan.selectAll("text")
             .data(that.paperTitles)
             .enter().append("g")
@@ -209,14 +207,9 @@ AuthorBubble = function(options){
                 var x = cx + r *Math.cos(angle*0.0174532925);
                 var y = cy + r *Math.sin(angle*0.0174532925);
 
-                attrX = x;
-                attrY = y;
-
                 return "translate(" + x + ", "  + y +") rotate(" + angle + ")";
             })
-            .attr("id", function(d) {return d.id})
-            .attr("x", attrX)
-            .attr("y", attrY)
+            .attr("paper_id", function(d) {return d.id})
 
             .each(function(d, i){
                 d3.select(this)
