@@ -8,6 +8,7 @@ $(document).ready(function(ev){
         .attr("width", 1000)
         .attr("height", 1000)
         .attr("id", "svg-container")
+
     //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
     // viewbox ist awesome für navigation in unserem graphen, eingebauter zoom + bildausschnitt
     var year = new Date().getFullYear();
@@ -22,6 +23,9 @@ $(document).ready(function(ev){
 
     $("button").button();
     $('#nav').tabs();
+    $("svg").bind("DOMMouseScroll",function(ev){
+
+    });
     $( "#yearSlider" ).slider({
         range: true,
         min: year-20,

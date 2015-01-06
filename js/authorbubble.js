@@ -3,19 +3,25 @@
  */
 
 AuthorBubble = function(options){
+    var that = this;
     this.papers = options["papers"];
+    this.svg = options['svg'];
+
+    //ui variables
+    this.root = options['root'];
+    this.detailView = this.root ? true :false;
+    this.width = $("#svg-container").attr("width");
+    this.height = $("#svg-container").attr("height");
+
+
+    // data
     this.id= options["id"];
     this.authorname = options["author"];
-    this.svg = options['svg'];
     this.data={author: this.authorname, papers:{}};
     this.yearLabels = [];
     this.yearPaperCount = [];
     this.paperTitles = [];
-    this.detailView = true;
-    var that = this;
 
-    this.width = $("#svg-container").attr("width");
-    this.height = $("#svg-container").attr("height");
 
 
     AuthorBubble.prototype.showDetails = function(){
@@ -27,7 +33,6 @@ AuthorBubble = function(options){
             this.paperFan.transition().style("opacity",1);
             this.activityPie.transition().style("opacity",1);
         }
-
     }
     AuthorBubble.prototype.listPapers = function(){
         ret = [];
@@ -53,7 +58,7 @@ AuthorBubble = function(options){
     this.createD3Data();
 
 //    console.log("creating author bubble with name: "+this.authorname);
-    this.bubble = this.svg.append("g").attr("transform", "translate(" + 0 + "," + 0 + ")").attr("class","authorBubble");
+    this.bubble = this.svg.append("g").attr("transform", "translate(" + 0 + "," + 0 + ")").attr("id","bubble"+this.id).attr("class","authorBubble");
 
 
     // ACTIVITY PIE
@@ -184,6 +189,11 @@ AuthorBubble = function(options){
         .attr("text-anchor", "middle")
         .attr("class","paper")
         .style("fill","#000");
+
+    if(!this.detailView){
+        this.paperFan.attr("opacity",0);
+        this.activityPie.attr("opacity",0);
+    }
 
     return this.bubble;
 /*
