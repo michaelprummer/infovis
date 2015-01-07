@@ -93,8 +93,8 @@ Layouter = function(opts){
                 var pointAuthor = [ele[0], ele[1]];
 
 
-                var pointAuthor = [x + r/2, y + r/2];
-                console.log(x+", "+y)
+                console.log(r)
+                var pointAuthor = [x + bubble.canvasWidth/4, y + bubble.canvasHeight/4];
                 this.svg.append("line")
                     .attr("x1",pointPaper[0])
                     .attr("y1",pointPaper[1])
