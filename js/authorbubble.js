@@ -115,7 +115,7 @@ AuthorBubble = function(options){
         .style("fill", "green")
         .attr("cx", cxBubble)
         .attr("cy", cyBubble)
-        .attr("r",this.innerRadius)
+        .attr("r",options.hasOwnProperty("r") ? options["r"] : this.innerRadius)
         .attr("text-anchor", "middle")
 
     var firstname = this.authorname.split(" ")[0]

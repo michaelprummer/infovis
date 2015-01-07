@@ -136,6 +136,7 @@ Layouter = function(opts){
 
             var g = this.svg.append("g").attr("class","coauthor").attr("transform","translate(0,0)");
             opts.svg = g;
+            opts.r = (edges[missingauthors[k]].length*5).clamp(25,75);
             this.generateBubble(opts);
 
            // edges
