@@ -122,7 +122,7 @@ Layouter = function(opts){
             var angle = (360/missingauthors.length)*k-85;
             var cx = bubble.canvasWidth/4;
             var cy = bubble.canvasHeight/4;
-            var r = (bubble.papers_count*20).clamp(350, 900);
+            var r = (bubble.papers_count*40).clamp(350, 1600);
             var x = cx + r/2 * Math.cos(angle*0.0174532925);
             var y = cy + r/2 * Math.sin(angle*0.0174532925);
 
@@ -134,7 +134,7 @@ Layouter = function(opts){
             opts.height = 150;
             opts.papers = null;
 
-            var g = this.svg.append("g").attr("class","coauthor").attr("transform","translate(0,0)").style("opacity",0.5);
+            var g = this.svg.append("g").attr("class","coauthor").attr("transform","translate(0,0)").style("opacity",1.0);
             opts.svg = g;
             opts.r = (edges[missingauthors[k]].length*5).clamp(25,75);
             this.generateBubble(opts);
