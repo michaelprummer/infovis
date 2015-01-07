@@ -75,10 +75,6 @@ AuthorBubble = function(options){
         this.outerRadius =  this.innerRadius+10;
     }
 
-    Number.prototype.clamp = function(min, max) {
-        return Math.min(Math.max(this, min), max);
-    };
-
     AuthorBubble.prototype.showDetails = function(){
         this.detailView = !this.detailView;
         if(this.detailView == false){

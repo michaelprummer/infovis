@@ -136,7 +136,7 @@ Layouter = function(opts){
             var angle = (360/missingauthors.length)*k-85;
             var cx = bubble.canvasWidth/4;
             var cy = bubble.canvasHeight/4;
-            var r = (bubble.papers_count*40).clamp(350, 1200);
+            var r = (bubble.papers_count*50).clamp(bubble.outerRadius + 550, 1200);
             var x = cx + r/2 * Math.cos(angle*0.0174532925);
             var y = cy + r/2 * Math.sin(angle*0.0174532925);
 
