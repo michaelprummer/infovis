@@ -87,14 +87,14 @@ Layouter = function(opts){
                 /**
                  * Author Point
                  */
-                var ele = $("g.paper[paper_id='" + paperid + "']");
-                //ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
-                //ele = ele.split(", ")
-                //var pointPaper = [ele[0], ele[1]];
+                var ele = $(".authorBubble .name[id='" + opts.author + "']").parent();
+                ele = ele.attr("transform").replace("translate(","").replace(")","");
+                ele = ele.split(",")
+                var pointAuthor = [ele[0], ele[1]];
 
 
-                var pointAuthor = [x + r/2 + opts.width, y + r/2 + opts.height];
-                console.log(x+", "+y)
+                console.log(r)
+                var pointAuthor = [x + bubble.canvasWidth/4, y + bubble.canvasHeight/4];
                 this.svg.append("line")
                     .attr("x1",pointPaper[0])
                     .attr("y1",pointPaper[1])
