@@ -129,7 +129,7 @@ AuthorBubble = function(options){
 
     var firstname = this.authorname.split(" ")[0]
     var lastname = this.authorname.split(" ")[1]
-    var name_font_size = (this.root)?("11pt"):("15pt")
+    var name_font_size = (this.root)?("11pt"):("8pt")
 
     namebadge.append("text")
         .text(firstname)
