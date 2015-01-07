@@ -187,7 +187,7 @@ Layouter = function(opts){
                 id = d3.select(this).select("g").style("font-weight","bold").attr("index")
 
                 d3.selectAll(".coauthor path[paperid='"+id+"']").transition().style("opacity",1).each(function(d,i){
-                    d3.select(this.parentNode).select(".name").transition().style("opacity",1).style("fill","green")
+                    d3.select(this.parentNode).select(".name").transition().style("opacity",1)
                 })
             })
 
