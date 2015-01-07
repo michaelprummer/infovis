@@ -116,4 +116,5 @@ body .ui-autocomplete {
 }
 .coauthor .name{
     opacity:.2;
+    cursor:pointer;
 }

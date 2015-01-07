@@ -12,6 +12,15 @@ Layouter = function(opts){
     this.rootId = 0;
     this.authors = {};
 
+    d3.selection.prototype.moveToFront = function() {
+        return this.each(function(){
+            this.parentNode.appendChild(this);
+        });
+    };
+    function addSlashes(str){
+        return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+    }
+
     Layouter.prototype.hasAuthor = function(data,name){
         for (var i = 0; i < data.length; i++) {
             if(data[i].author==name) return true;
@@ -131,7 +140,7 @@ Layouter = function(opts){
             var x = cx + r/2 * Math.cos(angle*0.0174532925);
             var y = cy + r/2 * Math.sin(angle*0.0174532925);
 
-            opts.author = missingauthors[k];
+            opts.author = addSlashes(missingauthors[k]);
             opts.x = x;
             opts.y = y;
             opts.root = false;
@@ -145,43 +154,52 @@ Layouter = function(opts){
             opts.r = (edges[missingauthors[k]].length*5).clamp(25,75);
             var b = this.generateBubble(opts);
            // edges
+            if(edges.hasOwnProperty([opts.author])) {
+                for (var l = 0; l < edges[opts.author].length; l++) {
+                    var paperid = edges[opts.author][l];
 
-            for (var l = 0; l < edges[opts.author].length; l++) {
-                var paperid = edges[opts.author][l];
+                    /**
+                     * Paper Point
+                     */
+                    // Sollte man irgendwie gleich als Attribut ablegen :D kann man ja in bubble.translate.x speichern
+                    /*var ele = $("g.paper[paper_id='" + paperid + "']");
+                     ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
+                     ele = ele.split(", ");*/
+                    var pointPaper = this.bubble.getPaperPosition(paperid);
 
-                /**
-                 * Paper Point
-                 */
-                // Sollte man irgendwie gleich als Attribut ablegen :D kann man ja in bubble.translate.x speichern
-                /*var ele = $("g.paper[paper_id='" + paperid + "']");
-                ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
-                ele = ele.split(", ");*/
-                var pointPaper = this.bubble.getPaperPosition(paperid);
-
-                /**
-                 * Author Point
-                 */
-                var ele = $(".authorBubble .name[id='" + opts.author + "']").parent();
-                ele = ele.attr("transform").replace("translate(","").replace(")","");
-                ele = ele.split(",")
-                var pointAuthor = [ele[0], ele[1]];
+                    /**
+                     * Author Point
+                     */
+                    var ele = $(".authorBubble .name[id='" + opts.author + "']").parent();
+                    ele = ele.attr("transform").replace("translate(", "").replace(")", "");
+                    ele = ele.split(",")
+                    var pointAuthor = [ele[0], ele[1]];
 
 
-                var pointAuthor = [x + bubble.canvasWidth/4, y + bubble.canvasHeight/4];
-                var lineData = [{x:pointPaper[0],y:pointPaper[1]},{x:pointAuthor[0],y:pointAuthor[1]}];
+                    var pointAuthor = [x + bubble.canvasWidth / 4, y + bubble.canvasHeight / 4];
+                    var lineData = [{x: pointPaper[0], y: pointPaper[1]}, {x: pointAuthor[0], y: pointAuthor[1]}];
 
-                var lineFunction = d3.svg.line()
-                    .x(function(d) { return d.x; })
-                    .y(function(d) { return d.y; })
-                    .interpolate("basis");
+                    var lineFunction = d3.svg.line()
+                        .x(function (d) {
+                            return d.x;
+                        })
+                        .y(function (d) {
+                            return d.y;
+                        })
+                        .interpolate("basis");
 
-                g.append("path")
-                    .attr("d",lineFunction(lineData))
-                    .style("stroke","#4A4A4A")
-                    .attr("paperid",paperid);
+                    g.append("path")
+                        .attr("d", lineFunction(lineData))
+                        .style("stroke", "#4A4A4A")
+                        .attr("paperid", paperid);
+                }
             }
 
         }
+        // reorder bubbles
+        that.svg.selectAll(".authorBubble").moveToFront();
+
+        // highllight author and connection on paper hover
         this.svg.selectAll(".paper")
             .on("mouseover",function(ev){
                 id = d3.select(this).select("g").style("font-weight","bold").attr("index")
