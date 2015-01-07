@@ -12,19 +12,36 @@ Layouter = function(opts){
     this.rootId = 0;
     this.authors = {};
 
+    Layouter.prototype.hasAuthor = function(data,name){
+        for (var i = 0; i < data.length; i++) {
+            if(data[i].author==name) return true;
+
+        }
+        return false;
+    }
+    Layouter.prototype.addEdge = function(data,name,addval){
+        for (var i = 0; i < data.length; i++) {
+            if(data[i].hasOwnProperty("connections") && data[i].author==name) data[i]["connections"].push(addval);
+        }
+    }
+
     Layouter.prototype.generateRootBubble = function(opts){
         opts["id"] = this.currentId;
         opts["root"] = true;
         opts["x"] = 0;
         opts["y"] = 0;
         var bubble = new AuthorBubble(opts)
-        this.bubbles[this.currentId] =bubble;
+        this.bubble= bubble;
+        this.bubbles[this.currentId] = bubble;
+
         this.rootId = this.currentId;
         this.currentId++;
 
         // loop through co-authors
         var missingauthors = [];
         var edges = {};
+        var d3data = [];
+
 
         for (var i = 0; i < bubble.papers.length; i++) {
             for (var j = 0; j < bubble.papers[i].elements.length; j++) {
@@ -34,12 +51,14 @@ Layouter = function(opts){
                     if(!(author == bubble.authorname)){
                         if($.inArray(author,missingauthors) == -1){
                             missingauthors.push(author);
-                            // Edge: [<papertitle>,<index in missingauthors>]
+                            // Edge: [<authorname>->[paperid1,paperid2...]]
                             edges[author] = [];
+                            d3data.push({author:author,connections:[]})
 
                         }
                         if(edges.hasOwnProperty(author)){
                             edges[author].push(bubble.papers[i].elements[j].paper_index);
+                            this.addEdge(d3data,author,bubble.papers[i].elements[j].paper_index)
                         }
 
                     }
@@ -47,9 +66,57 @@ Layouter = function(opts){
             }
         }
         console.log("missing authors:");
-        console.log(edges);
+        console.log(d3data);
         // generate their bubbles
+        /*
+        this.svg.selectAll("g.coauthor")
+            .data(d3data)
+            .enter()
+            .append("g")
+            .attr("class","coauthor")
+            .each(function(d,i){
+                d3.select(this).append("text").text(function(d,i){return d.name});
+                var angle = (360/d.length)*i-85;
+                var cx = bubble.canvasWidth/4;
+                var cy = bubble.canvasHeight/4;
+                var r = (bubble.papers_count*20).clamp(350, 900);
+                var x = cx + r/2 * Math.cos(angle*0.0174532925);
+                var y = cy + r/2 * Math.sin(angle*0.0174532925);
 
+                opts.author = d.author;
+
+
+                for (var j = 0; j < d.connections.length; j++) {
+
+                    var paperid = d.connections[j];
+
+                    // Sollte man irgendwie gleich als Attribut ablegen :D
+                    var ele = d3.select("g.paper[paper_id='" + paperid + "']");
+                    ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
+                    ele = ele.split(", ")
+                    var pointPaper = [ele[0], ele[1]];
+
+                    var ele = d3.select(".authorBubble .name[id='" + opts.author + "']").node().parentNode;
+                    ele = d3.select(ele).attr("transform").replace("translate(","").replace(")","");
+                    ele = ele.split(",")
+                    var pointAuthor = [ele[0], ele[1]];
+
+
+                    console.log(r)
+                    var pointAuthor = [x + bubble.canvasWidth/4, y + bubble.canvasHeight/4];
+                    d3.select(this).append("line")
+                        .attr("x1",pointPaper[0])
+                        .attr("y1",pointPaper[1])
+                        .attr("x2",pointAuthor[0])
+                        .attr("y2",pointAuthor[1])
+                        .style("stroke","#4A4A4A")
+
+
+                }
+
+            })
+
+        */
         for (var k = 0; k < missingauthors.length; k++) {
 
             var angle = (360/missingauthors.length)*k-85;
@@ -67,10 +134,10 @@ Layouter = function(opts){
             opts.height = 150;
             opts.papers = null;
 
-            this.generateBubble(opts);
+            //var g = this.svg.append(g).attr("class","coauthor").attr("transform","translate(0,0)");
+            //this.generateBubble(opts);
 
-
-           // if(edges[opts.author]){console.log(edges[opts.author])}else{console.log("keine kante...")}
+           // edges
 
             for (var l = 0; l < edges[opts.author].length; l++) {
                 var paperid = edges[opts.author][l];
@@ -78,10 +145,10 @@ Layouter = function(opts){
                 /**
                  * Paper Point
                  */
-                // Sollte man irgendwie gleich als Attribut ablegen :D
+                // Sollte man irgendwie gleich als Attribut ablegen :D kann man ja in bubble.translate.x speichern
                 var ele = $("g.paper[paper_id='" + paperid + "']");
                 ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
-                ele = ele.split(", ")
+                ele = ele.split(", ");
                 var pointPaper = [ele[0], ele[1]];
 
                 /**
@@ -95,15 +162,16 @@ Layouter = function(opts){
 
                 console.log(r)
                 var pointAuthor = [x + bubble.canvasWidth/4, y + bubble.canvasHeight/4];
-                this.svg.append("line")
+
+                g.append("line")
                     .attr("x1",pointPaper[0])
                     .attr("y1",pointPaper[1])
                     .attr("x2",pointAuthor[0])
                     .attr("y2",pointAuthor[1])
                     .style("stroke","#4A4A4A")
-
             }
         }
+
 
         return bubble;
     }
