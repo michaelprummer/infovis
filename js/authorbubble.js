@@ -108,22 +108,25 @@ AuthorBubble = function(options){
             namebadge.on("mouseover",function(ev){})
         }
 
+    var cxBubble = (this.root)? (this.canvasWidth/2) : (this.canvasWidth/4)
+    var cyBubble = (this.root)? (this.canvasWidth/2) : (this.canvasWidth/4)
+
     namebadge.append("circle")
         .style("fill", "green")
-        .attr("cx",this.canvasWidth/2)
-        .attr("cy",this.canvasHeight/2)
+        .attr("cx", cxBubble)
+        .attr("cy", cyBubble)
         .attr("r",this.innerRadius)
         .attr("text-anchor", "middle")
 
     var firstname = this.authorname.split(" ")[0]
     var lastname = this.authorname.split(" ")[1]
-    var name_font_size = (this.root)?("11pt"):("15pt")
+    var name_font_size = (this.root)?("11pt"):("8pt")
 
     namebadge.append("text")
         .text(firstname)
         .attr("text-anchor", "middle")
-        .attr("dx",this.canvasWidth/2)
-        .attr("dy",this.canvasHeight/2-10)
+        .attr("dx", cxBubble)
+        .attr("dy", cyBubble-10)
         .attr("class","authorname")
         .style("fill","#b2f1ff")
         .style("font-size", name_font_size);
@@ -132,8 +135,8 @@ AuthorBubble = function(options){
     namebadge.append("text")
         .text(lastname)
         .attr("text-anchor", "middle")
-        .attr("dx",this.canvasWidth/2)
-        .attr("dy",this.canvasHeight/2+10)
+        .attr("dx", cxBubble)
+        .attr("dy", cyBubble+10)
         .attr("class","authorname")
         .style("fill","#b2f1ff")
         .style("font-size", name_font_size);

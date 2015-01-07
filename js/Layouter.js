@@ -134,8 +134,9 @@ Layouter = function(opts){
             opts.height = 150;
             opts.papers = null;
 
-            //var g = this.svg.append(g).attr("class","coauthor").attr("transform","translate(0,0)");
-            //this.generateBubble(opts);
+            var g = this.svg.append("g").attr("class","coauthor").attr("transform","translate(0,0)");
+            opts.svg = g;
+            this.generateBubble(opts);
 
            // edges
 
