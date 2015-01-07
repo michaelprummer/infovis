@@ -105,7 +105,12 @@ AuthorBubble = function(options){
             });
         }else{
             //make root and new call
-            namebadge.on("mouseover",function(ev){})
+            namebadge.on("mouseover",function(ev){
+                d3.select(d3.select(this).node().parentNode).transition().style("opacity",1)
+            })
+            namebadge.on("mouseout",function(ev){
+                d3.select(d3.select(this).node().parentNode).transition().style("opacity",0.5)
+            })
         }
 
     var cxBubble = (this.root)? (this.canvasWidth/2) : (this.canvasWidth/4)

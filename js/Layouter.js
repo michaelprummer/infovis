@@ -134,7 +134,7 @@ Layouter = function(opts){
             opts.height = 150;
             opts.papers = null;
 
-            var g = this.svg.append("g").attr("class","coauthor").attr("transform","translate(0,0)");
+            var g = this.svg.append("g").attr("class","coauthor").attr("transform","translate(0,0)").style("opacity",0.5);
             opts.svg = g;
             opts.r = (edges[missingauthors[k]].length*5).clamp(25,75);
             this.generateBubble(opts);
