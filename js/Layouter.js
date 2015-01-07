@@ -56,8 +56,8 @@ Layouter = function(opts){
             var cx = bubble.canvasWidth/4;
             var cy = bubble.canvasHeight/4;
             var r = (bubble.papers_count*20).clamp(350, 900);
-            var x = cx + r * Math.cos(angle*0.0174532925);
-            var y = cy + r * Math.sin(angle*0.0174532925);
+            var x = cx + r/2 * Math.cos(angle*0.0174532925);
+            var y = cy + r/2 * Math.sin(angle*0.0174532925);
 
             opts.author = missingauthors[k];
             opts.x = x;

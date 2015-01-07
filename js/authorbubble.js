@@ -16,8 +16,6 @@ AuthorBubble = function(options){
     this.authorname = options.hasOwnProperty("author") ? options["author"] : "Max Mustermann";
     this.x = options.hasOwnProperty("x") ? options.x : 0;
     this.y = options.hasOwnProperty("y") ? options.y : 0;
-    this.width = options.hasOwnProperty("width") ? options.width : 300; // Unused cause of dynamic size
-    this.height = options.hasOwnProperty("height") ? options.height : 300;
 
     // UI variables
     this.detailView = this.root ? true :false;
@@ -37,13 +35,6 @@ AuthorBubble = function(options){
     };
 
     AuthorBubble.prototype.getPaperPosition = function(id){
-        var angle = (360/this.papers_count)*parseInt(id);
-        var r = 250;
-        var cx = (that.width/2 - 100);
-        var cy = (that.height/2 - 100);
-        var x = cx + r *Math.cos(angle*0.0174532925);
-        var y = cy + r *Math.sin(angle*0.0174532925);
-        return [x,y];
 
     }
 
