@@ -34,7 +34,30 @@ AuthorBubble = function(options){
         return Math.min(Math.max(this, min), max);
     };
 
+    AuthorBubble.prototype.countPapers = function(){
+        if(this.papers){
+            var count = 0;
+            for(var i=0;i<this.papers.length;i++){
+                count += this.papers[i]["elements"].length;
+            }
+            return count;
+
+        }else{
+            return 0;
+        }
+    }
+
     AuthorBubble.prototype.getPaperPosition = function(id){
+
+        var angle = (360/this.countPapers())*id-85;
+        var r = that.outerRadius + 270;
+        var cx = (that.canvasWidth/2);
+        var cy = (that.canvasHeight/2);
+        var x = cx + r *Math.cos(angle*0.0174532925);
+        var y = cy + r *Math.sin(angle*0.0174532925);
+
+        return [x, y];
+
 
     }
 
@@ -104,7 +127,7 @@ AuthorBubble = function(options){
                 that.showDetails();
             });
         }else{
-            //make root and new call
+            //TODO make root and new call
             namebadge.on("mouseover",function(ev){
                 d3.select(d3.select(this).node().parentNode).transition().style("opacity",1)
             })
@@ -216,7 +239,7 @@ AuthorBubble = function(options){
                     .attr("index", i)
                     .attr("transform", function(d) {
                         var angle = (360/that.paperTitles.length)*i;
-                        return "rotate(" + ((angle > 130 && angle < 355) ? 180 : 0) + ")"
+                            return "rotate(" + ((angle > 180 && angle < 355) ? 180 : 0) + ")"
 
                     }).append('text').text(function(d, i){
                         var index = $(d3.select(this).node().parentNode).attr("index");
@@ -227,19 +250,19 @@ AuthorBubble = function(options){
                         if(text.length < len) {
                             var oldLen = text.length;
                             for(i=0;i<(len - oldLen + 3);i++){
-                                text = (angle > 130 && angle < 355)? (text+"."):("."+text);
+                                text = (angle > 130 && angle < 355)? (text+"."):(text+".");
                             }
                         } else {
                             text = text.substr(0,len)
-                            text = (angle > 130 && angle < 355)? (text+"..."):("..."+text);
+                            text += "...";
                         }
 
                         return text;
                     })
             })
             .style("font-size","11.5pt")
-            .attr("text-anchor", "middle")
             .attr("class","paper")
+            .attr("text-anchor","middle")
             .style("fill","#000");
 
         if(!this.detailView){

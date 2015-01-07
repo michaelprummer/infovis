@@ -134,10 +134,10 @@ Layouter = function(opts){
             opts.height = 150;
             opts.papers = null;
 
-            var g = this.svg.append("g").attr("class","coauthor").attr("transform","translate(0,0)").style("opacity",0.5);
+                var g = this.svg.append("g").attr("class","coauthor").attr("transform","translate(0,0)").style("opacity",0.5);
             opts.svg = g;
             opts.r = (edges[missingauthors[k]].length*5).clamp(25,75);
-            this.generateBubble(opts);
+            var b = this.generateBubble(opts);
 
            // edges
 
@@ -148,10 +148,10 @@ Layouter = function(opts){
                  * Paper Point
                  */
                 // Sollte man irgendwie gleich als Attribut ablegen :D kann man ja in bubble.translate.x speichern
-                var ele = $("g.paper[paper_id='" + paperid + "']");
+                /*var ele = $("g.paper[paper_id='" + paperid + "']");
                 ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
-                ele = ele.split(", ");
-                var pointPaper = [ele[0], ele[1]];
+                ele = ele.split(", ");*/
+                var pointPaper = this.bubble.getPaperPosition(paperid);
 
                 /**
                  * Author Point
@@ -162,14 +162,16 @@ Layouter = function(opts){
                 var pointAuthor = [ele[0], ele[1]];
 
 
-                console.log(r)
                 var pointAuthor = [x + bubble.canvasWidth/4, y + bubble.canvasHeight/4];
+                var lineData = [{x:pointPaper[0],y:pointPaper[1]},{x:pointAuthor[0],y:pointAuthor[1]}];
 
-                g.append("line")
-                    .attr("x1",pointPaper[0])
-                    .attr("y1",pointPaper[1])
-                    .attr("x2",pointAuthor[0])
-                    .attr("y2",pointAuthor[1])
+                var lineFunction = d3.svg.line()
+                    .x(function(d) { return d.x; })
+                    .y(function(d) { return d.y; })
+                    .interpolate("basis");
+
+                g.append("path")
+                    .attr("d",lineFunction(lineData))
                     .style("stroke","#4A4A4A")
             }
         }
