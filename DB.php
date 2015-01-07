@@ -15,7 +15,7 @@ class DB {
     }
 
     function connect(){
-        $config = parse_ini_file("config.ini", TRUE);
+        $config = parse_ini_file("setup/config.ini", TRUE);
         $this->db = new mysqli($config["database"]["host"], $config["database"]["user"], $config["database"]["password"]);
 
         if ($this->db->connect_errno) {

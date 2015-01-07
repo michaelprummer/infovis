@@ -129,10 +129,10 @@ AuthorBubble = function(options){
         }else{
             //TODO make root and new call
             namebadge.on("mouseover",function(ev){
-                d3.select(d3.select(this).node().parentNode).transition().style("opacity",1)
+                d3.select(that.bubble.node().parentNode).transition().style("opacity",1)
             })
             namebadge.on("mouseout",function(ev){
-                d3.select(d3.select(this).node().parentNode).transition().style("opacity",0.5)
+                d3.select(that.bubble.node().parentNode).transition().style("opacity",0.5)
             })
         }
 
