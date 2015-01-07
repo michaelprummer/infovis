@@ -117,10 +117,13 @@ AuthorBubble = function(options){
             namebadge.on("mouseover",function(ev){})
         }
 
+    var cxBubble = (this.root)? (this.canvasWidth/2) : (this.canvasWidth/4)
+    var cyBubble = (this.root)? (this.canvasWidth/2) : (this.canvasWidth/4)
+
     namebadge.append("circle")
         .style("fill", "green")
-        .attr("cx",this.canvasWidth/2)
-        .attr("cy",this.canvasHeight/2)
+        .attr("cx", cxBubble)
+        .attr("cy", cyBubble)
         .attr("r",this.innerRadius)
         .attr("text-anchor", "middle")
 
@@ -131,8 +134,8 @@ AuthorBubble = function(options){
     namebadge.append("text")
         .text(firstname)
         .attr("text-anchor", "middle")
-        .attr("dx",this.canvasWidth/2)
-        .attr("dy",this.canvasHeight/2-10)
+        .attr("dx", cxBubble)
+        .attr("dy", cyBubble-10)
         .attr("class","authorname")
         .style("fill","#b2f1ff")
         .style("font-size", name_font_size);
@@ -141,15 +144,15 @@ AuthorBubble = function(options){
     namebadge.append("text")
         .text(lastname)
         .attr("text-anchor", "middle")
-        .attr("dx",this.canvasWidth/2)
-        .attr("dy",this.canvasHeight/2+10)
+        .attr("dx", cxBubble)
+        .attr("dy", cyBubble+10)
         .attr("class","authorname")
         .style("fill","#b2f1ff")
         .style("font-size", name_font_size);
 
 
     if(!this.root){
-        namebadge.attr("transform","scale(0.5)")
+        //namebadge.attr("transform","scale(0.5)")
     }
 
     if(this.papers){

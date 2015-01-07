@@ -7,6 +7,7 @@ $(document).ready(function(ev){
     var svgContainer = canvas.append("svg")
         .attr("width", width)
         .attr("height", height)
+        //.attr("transform", "scale(2)") // Doesn't work in Chrome...
         .attr("id", "svg-container")
 
     //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
