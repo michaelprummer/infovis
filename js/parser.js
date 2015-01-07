@@ -73,7 +73,6 @@ Parser = function(opts){
                                 var options = {papers: data, author: realAuthorname, svg: that.svg};
                                 that.layouter.generateRootBubble(options);
 
-                                $(".paper").tooltip();
 
                             }
 
@@ -87,6 +86,9 @@ Parser = function(opts){
             $("#error").text(textStatus+":"+errorThrown);
             $("#error").fadeIn(200);
         })
+    }
+    Parser.prototype.setLayouter = function(layouter){
+        this.layouter = layouter;
     }
     Parser.prototype.addFilter = function(opts){
         if(opts.hasOwnProperty('year')){

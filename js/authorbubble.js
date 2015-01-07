@@ -123,16 +123,23 @@ AuthorBubble = function(options){
         .attr("class","name")
         .attr("id",this.authorname);
         if(this.root){
-            namebadge.on("mousedown",function(){
+            namebadge.on("click",function(){
                 that.showDetails();
             });
         }else{
-            //TODO make root and new call
             namebadge.on("mouseover",function(ev){
-                d3.select(that.bubble.node().parentNode).transition().style("opacity",1)
+                d3.select(this.parentNode.parentNode).selectAll("path").transition().style("opacity",1)
+                    .each(function(d,i){
+                        d3.selectAll(".paper g[index='"+d3.select(this).attr("paperid")+"']").style("font-weight","bold")
+                    })
+                d3.select(this).transition().style("opacity",1)
             })
             namebadge.on("mouseout",function(ev){
-                d3.select(that.bubble.node().parentNode).transition().style("opacity",0.5)
+                d3.select(this.parentNode.parentNode).selectAll("path").transition().style("opacity",.2)
+                    .each(function(d,i){
+                        d3.selectAll(".paper g[index='"+d3.select(this).attr("paperid")+"']").style("font-weight","normal")
+                    })
+                d3.select(this).transition().style("opacity",.2)
             })
         }
 

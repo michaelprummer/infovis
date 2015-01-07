@@ -13,9 +13,10 @@ $(document).ready(function(ev){
     //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
     // viewbox ist awesome für navigation in unserem graphen, eingebauter zoom + bildausschnitt
     var year = new Date().getFullYear();
-    var layouter = new Layouter({svg:svgContainer,width:width,height:height});
-    var parser = new Parser({svg:svgContainer,layouter:layouter});
-    layouter.setParser(parser);
+    var parser = new Parser({svg:svgContainer});
+    var layouter = new Layouter({svg:svgContainer,width:width,height:height,parser:parser});
+    parser.setLayouter(layouter);
+
 
     parser.addFilter({
         year:{
