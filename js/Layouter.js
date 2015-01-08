@@ -202,20 +202,25 @@ Layouter = function(opts){
         // highllight author and connection on paper hover
         this.svg.selectAll(".paper")
             .on("mouseover",function(ev){
-                id = d3.select(this).select("g").style("font-weight","bold").attr("index")
+                if(that.bubble.detailView){
+                    id = d3.select(this).select("g").style("font-weight","bold").attr("index")
 
-                d3.selectAll(".coauthor path[paperid='"+id+"']").transition().style("opacity",1).each(function(d,i){
-                    d3.select(this.parentNode).select(".name").transition().style("opacity",1)
-                })
+                    d3.selectAll(".coauthor path[paperid='"+id+"']").transition().style("opacity",1).each(function(d,i){
+                        d3.select(this.parentNode).select(".name").transition().style("opacity",1)
+                    })
+
+                }
             })
 
-        .on("mouseout",function(ev){
-            id = d3.select(this).select("g").style("font-weight","normal").attr("index")
+            .on("mouseout",function(ev){
+                if(that.bubble.detailView){
+                    id = d3.select(this).select("g").style("font-weight","normal").attr("index")
 
-                d3.selectAll(".coauthor path[paperid='"+id+"']").transition().style("opacity",.2).each(function(d,i){
-                    d3.select(this.parentNode).select(".name").transition().style("opacity",.2)
-                })
-        });
+                    d3.selectAll(".coauthor path[paperid='"+id+"']").transition().style("opacity",.2).each(function(d,i){
+                        d3.select(this.parentNode).select(".name").transition().style("opacity",.2)
+                    })
+                }
+            });
 
         return bubble;
     }

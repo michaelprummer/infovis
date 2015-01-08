@@ -80,9 +80,20 @@ AuthorBubble = function(options){
         if(this.detailView == false){
             this.paperFan.transition().style("opacity",0);
             this.activityPie.transition().style("opacity",0);
+            d3.selectAll(".coauthor > path")
+                .attr("data-alpha",function(d,i){
+                    d3.select(this).style("opacity");
+                })
+                .transition()
+                .style("opacity",0);
         }else{
             this.paperFan.transition().style("opacity",1);
             this.activityPie.transition().style("opacity",1);
+            d3.selectAll(".coauthor path")
+                .transition()
+                .style("opacity",function(d,i){
+                    return d3.select(this).attr("data-alpha")
+                });
         }
     }
     AuthorBubble.prototype.listPapers = function(){
@@ -124,17 +135,22 @@ AuthorBubble = function(options){
             });
         }else{
             namebadge.on("mouseover",function(ev){
-                d3.select(this.parentNode.parentNode).selectAll("path").transition().style("opacity",1)
-                    .each(function(d,i){
-                        d3.selectAll(".paper g[index='"+d3.select(this).attr("paperid")+"']").style("font-weight","bold")
-                    })
+                if(that.detailView){
+
+                    d3.select(this.parentNode.parentNode).selectAll("path").transition().style("opacity",1)
+                        .each(function(d,i){
+                            d3.selectAll(".paper g[index='"+d3.select(this).attr("paperid")+"']").style("font-weight","bold")
+                        })
+                }
                 d3.select(this).transition().style("opacity",1)
             })
             namebadge.on("mouseout",function(ev){
-                d3.select(this.parentNode.parentNode).selectAll("path").transition().style("opacity",.2)
-                    .each(function(d,i){
-                        d3.selectAll(".paper g[index='"+d3.select(this).attr("paperid")+"']").style("font-weight","normal")
-                    })
+                if(that.detailView){
+                    d3.select(this.parentNode.parentNode).selectAll("path").transition().style("opacity",.2)
+                        .each(function(d,i){
+                            d3.selectAll(".paper g[index='"+d3.select(this).attr("paperid")+"']").style("font-weight","normal")
+                        })
+                }
                 d3.select(this).transition().style("opacity",.2)
             })
         }
