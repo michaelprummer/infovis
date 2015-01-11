@@ -156,7 +156,7 @@ AuthorBubble = function(options){
         }
 
     var cxBubble = (this.root)? (this.canvasWidth/2) : (this.canvasWidth/4)
-    var cyBubble = (this.root)? (this.canvasWidth/2) : (this.canvasWidth/4)
+    var cyBubble = (this.root)? (this.canvasHeight/2) : (this.canvasHeight/4)
 
     namebadge.append("circle")
         .style("fill", "green")

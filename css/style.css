@@ -1,3 +1,21 @@
+body {
+    margin:0;
+    padding:0;
+    background: #eee;
+}
+
+#canvas {
+    float: left;
+    background: #fff;
+}
+
+#svg-container {
+    float: left;
+}
+
+body .ui-autocomplete {
+    font-size: .8em;
+}
 
 .block {
     margin: 1em 0;
@@ -103,14 +121,6 @@ input{
     height: 100%;
 }
 
-body .ui-autocomplete {
-    font-size: .8em;
-}
-
-#svg-container {
-    border: #ccc 1px solid;
-    margin: 0px 5px;
-}
 .coauthor path{
     opacity:.2;
 }

@@ -1,17 +1,21 @@
-$(document).ready(function(ev){
+"use strict";
+var enablePan = 1; // 1 or 0: enable or disable panning (default enabled)
+var enableZoom = 1; // 1 or 0: enable or disable zooming (default enabled)
+var enableDrag = 0; // 1 or 0: enable or disable dragging (default disabled)
+var state = 'none', svgRoot, stateTarget, stateOrigin, stateTf;
+
+$(document).ready(function(){
     $('#error').hide();
-    var width = 1800;
-    var height = 1800;
-    var canvasId="canvas";
+    var width = $(window).width() - $("#nav").width() - 25;
+    var height = $(window).height();
     var canvas = d3.select("#canvas");
     var svgContainer = canvas.append("svg")
         .attr("width", width)
         .attr("height", height)
-        //.attr("transform", "scale(2)") // Doesn't work in Chrome...
         .attr("id", "svg-container")
+            .append("g")
+            .attr("id", "viewport");
 
-    //.attr('viewBox', "0 0 "+parseInt(width, 10)+" "+parseInt(height, 10));
-    // viewbox ist awesome für navigation in unserem graphen, eingebauter zoom + bildausschnitt
     var year = new Date().getFullYear();
     var parser = new Parser({svg:svgContainer});
     var layouter = new Layouter({svg:svgContainer,width:width,height:height,parser:parser});
@@ -51,7 +55,7 @@ $(document).ready(function(ev){
 
     $("#searchAuthor").click(function(ev){
         ev.preventDefault();
-        options = {};
+        var options = {};
         options["name"] = $('#name').val();
         //options["year"] = $('#year').val();
         //options["conference"] = $('#conference').val();
@@ -123,7 +127,7 @@ $(document).ready(function(ev){
         minChars: 1,
         cache:	true,
         select: function(event, ui) {
-            options = {};
+            var options = {};
             options["name"] = ui.item.value;
             //options["year"] = $('#year').val();
             //options["conference"] = $('#conference').val();
@@ -139,7 +143,7 @@ $(document).ready(function(ev){
         minChars: 1,
         cache:	true,
         select: function(event, ui) {
-            options = {};
+            var options = {};
             options["name"] = ui.item.value;
             //options["year"] = $('#year').val();
             //options["conference"] = $('#conference').val();
@@ -149,11 +153,12 @@ $(document).ready(function(ev){
         }
     })
 
+    $('svg').svgPan('viewport');
 
     /****************************
-     *          TEST            *
+     *   Default paper on load  *
      ****************************/
-    options = {};
+    var options = {};
     options["name"] = $('#name').val();
     options["paper"] = $('#paper').val();
     parser.callApi(options);
