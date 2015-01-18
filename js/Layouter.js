@@ -177,10 +177,13 @@ Layouter = function(opts){
         var bubble = new AuthorBubble(opts)
         bubble.bubble.on("click",function(ev){
             var name = bubble.authorname.split(" ");
+            var searchName = name[name.length-1];
+            $("#name").html(bubble.authorname);
+            $("#name").attr("value", searchName);
 
-
-           that.parser.callApi({name:name[name.length-1]});
+           that.parser.callApi({name:searchName});
         });
+
         this.bubbles[this.currentId] = bubble;
         this.currentId++;
         return bubble;

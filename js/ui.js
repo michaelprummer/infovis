@@ -1,8 +1,4 @@
 "use strict";
-var enablePan = 1; // 1 or 0: enable or disable panning (default enabled)
-var enableZoom = 1; // 1 or 0: enable or disable zooming (default enabled)
-var enableDrag = 0; // 1 or 0: enable or disable dragging (default disabled)
-var state = 'none', svgRoot, stateTarget, stateOrigin, stateTf;
 
 $(document).ready(function(){
     $('#error').hide();
@@ -49,6 +45,9 @@ $(document).ready(function(){
             });
         },
         stop: function(event, ui) {
+            var options = {};
+            options["name"] = $('#name').val();
+            options["paper"] = $('#paper').val();
             parser.callApi(options);
         }
     });
@@ -59,10 +58,7 @@ $(document).ready(function(){
         ev.preventDefault();
         var options = {};
         options["name"] = $('#name').val();
-        //options["year"] = $('#year').val();
-        //options["conference"] = $('#conference').val();
         options["paper"] = $('#paper').val();
-
         parser.callApi(options);
     });
 
@@ -79,13 +75,8 @@ $(document).ready(function(){
         $(this).parent().addClass("showInput");
         $(this).parent().animate({'height':inputHeightExpanded,duration:aniDuration/2});
         $(this).animate({'font-size':'9px'},aniDuration,function() {$(this).siblings('input').focus()});
-        //css animation method
-        // var input = $(this).parent().addClass("showInput");
-        //$(this).addClass("small");
-        //$(this).parent().find('input').focus();
-
-
     });
+
     $('.input input').focus(function(ev){
         // show input
         //jquery animate cause of callback.
@@ -95,12 +86,6 @@ $(document).ready(function(){
             $(this).siblings('label').animate({'font-size':'9px'},200);
 
         }
-        //css animation method
-        // var input = $(this).parent().addClass("showInput");
-        //$(this).addClass("small");
-        //$(this).parent().find('input').focus();
-
-
     });
 
     // Clear Input field on click

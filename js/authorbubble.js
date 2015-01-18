@@ -133,9 +133,8 @@ AuthorBubble = function(options){
             namebadge.on("click",function(){
                 that.showDetails();
             });
-        }else{
+        } else {
             namebadge.on("mouseover",function(ev){
-
                     d3.select(this.parentNode.parentNode).selectAll("path")
                         .each(function(d,i){
                             var path =  d3.select(this);
