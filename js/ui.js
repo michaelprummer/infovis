@@ -152,7 +152,7 @@ $(document).ready(function(){
     /***
      *  Show content on site load?
      */
-    //loadContent();
+    loadContent();
 
     function loadContent(){
         var options = {};
