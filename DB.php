@@ -173,5 +173,28 @@ class DB {
         return $a_json;
     }
 
+    public function getPaper($id) {
+        if(is_numeric($id)) {
+            $a_json_row = array();
+            $data = $this->db->query("SELECT * FROM papers WHERE id = $id");
+            if($data){
+                while($row = mysqli_fetch_array($data)) {
+                    $title = (isset($row['title']))?($row['title']):("");
+                    $bib = (isset($row['bib']))?($row['bib']):("");
+                    $year = (isset($row['year']))?($row['year']):("");
+                    $keywords = (isset($row['keywords']))?($row['keywords']):("");
+                    $details = (isset($row['details']))?($row['details']):("");
+
+                    $a_json_row["id"] = $id;
+                    $a_json_row["year"] = $year;
+                    $a_json_row["title"] = $title;
+                    $a_json_row["keywords"] = $keywords;
+                    $a_json_row["details"] = $details;
+                    $a_json_row["bib"] = $bib;
+                }
+            }
+            return $a_json_row;
+        }
+    }
 }
 ?>

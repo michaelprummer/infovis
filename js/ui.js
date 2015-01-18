@@ -56,12 +56,13 @@ $(document).ready(function(){
 
     $("#searchAuthor").click(function(ev){
         ev.preventDefault();
-        var options = {};
-        options["name"] = $('#name').val();
-        options["paper"] = $('#paper').val();
-        parser.callApi(options);
+        loadContent();
     });
 
+    $('#searchButton').on("click", function (e){
+        e.preventDefault();
+        loadContent();
+    })
 
     // SEARCH FORM ANIMATING INPUTS:
     var aniDuration = 200;
@@ -93,6 +94,10 @@ $(document).ready(function(){
         $(this).val("");
     })
 
+    $('#paper').on("click", function (){
+        $(this).val("");
+    })
+
     $('.input input').blur(function(ev){
         // show input
         if($(this).val() == ""){
@@ -116,6 +121,7 @@ $(document).ready(function(){
         select: function(event, ui) {
             var options = {};
             options["name"] = ui.item.value;
+            options["mode"] = "authorView";
             //options["year"] = $('#year').val();
             //options["conference"] = $('#conference').val();
             //options["paper"] = $('#paper').val();
@@ -131,7 +137,7 @@ $(document).ready(function(){
         cache:	true,
         select: function(event, ui) {
             var options = {};
-            options["name"] = ui.item.value;
+            options["paper"] = ui.item.value;
             //options["year"] = $('#year').val();
             //options["conference"] = $('#conference').val();
             //options["paper"] = $('#paper').val();
@@ -140,13 +146,27 @@ $(document).ready(function(){
         }
     })
 
+
     $('svg').svgPan('viewport');
 
-    /****************************
-     *   Default paper on load  *
-     ****************************/
-    var options = {};
-    options["name"] = $('#name').val();
-    options["paper"] = $('#paper').val();
-    parser.callApi(options);
+    /***
+     *  Show content on site load?
+     */
+    //loadContent();
+
+    function loadContent(){
+        var options = {};
+        options["name"] = $('#name').val();
+        options["paper"] = $('#paper').val();
+        parser.callApi(options);
+    }
+
+    function getActiveTab(){
+        if($("#tabs-1").attr("aria-hidden") == "false") {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
 })
