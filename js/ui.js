@@ -47,11 +47,13 @@ $(document).ready(function(){
                     to:ui.values[ 1 ]
                 }
             });
+        },
+        stop: function(event, ui) {
+            parser.callApi(options);
         }
     });
     $( "#amount" ).val(  $( "#yearSlider" ).slider( "values", 0 ) +
     " to " + $( "#yearSlider" ).slider( "values", 1 ) );
-
 
     $("#searchAuthor").click(function(ev){
         ev.preventDefault();

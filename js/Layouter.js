@@ -79,58 +79,7 @@ Layouter = function(opts){
                 }
             }
         }
-        console.log("missing authors:");
-        console.log(d3data);
-        // generate their bubbles
-        /*
-        this.svg.selectAll("g.coauthor")
-            .data(d3data)
-            .enter()
-            .append("g")
-            .attr("class","coauthor")
-            .each(function(d,i){
-                d3.select(this).append("text").text(function(d,i){return d.name});
-                var angle = (360/d.length)*i-85;
-                var cx = bubble.canvasWidth/4;
-                var cy = bubble.canvasHeight/4;
-                var r = (bubble.papers_count*20).clamp(350, 900);
-                var x = cx + r/2 * Math.cos(angle*0.0174532925);
-                var y = cy + r/2 * Math.sin(angle*0.0174532925);
 
-                opts.author = d.author;
-
-
-                for (var j = 0; j < d.connections.length; j++) {
-
-                    var paperid = d.connections[j];
-
-                    // Sollte man irgendwie gleich als Attribut ablegen :D
-                    var ele = d3.select("g.paper[paper_id='" + paperid + "']");
-                    ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
-                    ele = ele.split(", ")
-                    var pointPaper = [ele[0], ele[1]];
-
-                    var ele = d3.select(".authorBubble .name[id='" + opts.author + "']").node().parentNode;
-                    ele = d3.select(ele).attr("transform").replace("translate(","").replace(")","");
-                    ele = ele.split(",")
-                    var pointAuthor = [ele[0], ele[1]];
-
-
-                    console.log(r)
-                    var pointAuthor = [x + bubble.canvasWidth/4, y + bubble.canvasHeight/4];
-                    d3.select(this).append("line")
-                        .attr("x1",pointPaper[0])
-                        .attr("y1",pointPaper[1])
-                        .attr("x2",pointAuthor[0])
-                        .attr("y2",pointAuthor[1])
-                        .style("stroke","#4A4A4A")
-
-
-                }
-
-            })
-
-        */
         for (var k = 0; k < missingauthors.length; k++) {
 
             var angle = (360/missingauthors.length)*k-85;
@@ -161,10 +110,6 @@ Layouter = function(opts){
                     /**
                      * Paper Point
                      */
-                    // Sollte man irgendwie gleich als Attribut ablegen :D kann man ja in bubble.translate.x speichern
-                    /*var ele = $("g.paper[paper_id='" + paperid + "']");
-                     ele = ele.attr("transform").split(") rotate(")[0].replace("translate(","");
-                     ele = ele.split(", ");*/
                     var pointPaper = this.bubble.getPaperPosition(paperid);
 
                     /**

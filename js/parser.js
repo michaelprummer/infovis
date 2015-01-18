@@ -10,7 +10,7 @@ Parser = function(opts){
     var canvasId="canvas";
     var canvas = d3.select(canvasId);
     var isDone = false;
-
+    this. data;
     this.svg =opts["svg"];
     this.layouter = opts["layouter"];
 
@@ -26,8 +26,8 @@ Parser = function(opts){
     Parser.prototype.filter= function (json,key){}*/
 
     Parser.prototype.callApi= function (options){
-        console.log("call api with: ");
-        console.log(options);
+        //console.log("call api with: ");
+        //console.log(options);
         this.options = options;
         var ret = [];
 
@@ -52,6 +52,7 @@ Parser = function(opts){
             },
             success: function(data,status,xhr) {
                 ret = data;
+                that.data = data;
                 $("#" + canvasId).removeClass("loading");
                 $(that.svg[0]).empty();
 
@@ -63,13 +64,13 @@ Parser = function(opts){
                     var realAuthorname = "";
                     if (data.length > 0) {
                         data = that.filterData(data);
-                        console.log("Api Call result:");
-                        console.log(data);
+                        //console.log("Api Call result:");
+                        //console.log(data);
 
                         for (var i = 0; i < data[0].elements[0].authors.length; i++) {
                             if (re.test(data[0].elements[0].authors[i].toLowerCase())) {
                                 realAuthorname = data[0].elements[0].authors[i];
-                                console.log(author + " matches " + realAuthorname);
+                                //console.log(author + " matches " + realAuthorname);
                                 var options = {papers: data, author: realAuthorname, svg: that.svg};
                                 that.layouter.generateRootBubble(options);
 
@@ -93,7 +94,7 @@ Parser = function(opts){
     Parser.prototype.addFilter = function(opts){
         if(opts.hasOwnProperty('year')){
             this.filter['year'] = opts['year'];
-            console.log("year filter changed to: "+this.filter['year'].from+", "+this.filter['year'].to);
+            //console.log("year filter changed to: "+this.filter['year'].from+", "+this.filter['year'].to);
         }
 
     }
@@ -109,7 +110,5 @@ Parser = function(opts){
         }
         return data;
     }
-
-
 }
 
