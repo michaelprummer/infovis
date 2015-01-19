@@ -1,11 +1,11 @@
-# infovis
-Informationsvisualisierung mit PubDB LMU
+# infovis<br>
+Informationsvisualisierung mit PubDB LMU<br>
 
-Unter /setup muss eine "config.ini" abgelegt werden:
--------------------------------------------------------------
-[database]
-user = "YOUR-DB-USER"
-password = "YOUR-DB-PASSWORD"
-name = "infovis"
-host = "localhost"
--------------------------------------------------------------
+Unter /setup muss eine "config.ini" abgelegt werden:<br>
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
+[database]<br>
+user = "YOUR-DB-USER"<br>
+password = "YOUR-DB-PASSWORD"<br>
+name = "infovis"<br>
+host = "localhost"<br>
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
