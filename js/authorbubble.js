@@ -168,29 +168,20 @@ AuthorBubble = function(options){
         .attr("r",options.hasOwnProperty("r") ? options["r"] : this.innerRadius)
         .attr("text-anchor", "middle")
 
-    var firstname = this.authorname.split(" ")[0]
-    var lastname = this.authorname.split(" ")[1]
-    var name_font_size = (this.root)?("11pt"):("8pt")
 
-    namebadge.append("text")
-        .text(firstname)
-        .attr("text-anchor", "middle")
-        .attr("dx", cxBubble)
-        .attr("dy", cyBubble-10)
-        .attr("class","authorname")
-        .style("fill","#b2f1ff")
-        .style("font-size", name_font_size);
+    var full_name = this.authorname.split(" ");
+    var name_font_size = (this.root)?(12):(8); // pt
 
-
-    namebadge.append("text")
-        .text(lastname)
-        .attr("text-anchor", "middle")
-        .attr("dx", cxBubble)
-        .attr("dy", cyBubble+10)
-        .attr("class","authorname")
-        .style("fill","#b2f1ff")
-        .style("font-size", name_font_size);
-
+    for(var i=0;i<full_name.length;i++){
+        namebadge.append("text")
+            .text(full_name[i])
+            .attr("text-anchor", "middle")
+            .attr("dx", cxBubble)
+            .attr("dy", cyBubble-(name_font_size/2*full_name.length) + 25*i)
+            .attr("class","authorname")
+            .style("fill","#b2f1ff")
+            .style("font-size", (name_font_size + "pt"));
+    }
 
 
     if(this.papers){
