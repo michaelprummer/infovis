@@ -8,3 +8,4 @@ password = "YOUR-DB-PASSWORD"<br>
 name = "infovis"<br>
 host = "localhost"<br>
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Dann unter /setup gehen und start anklicken, das crawlen der Daten kann etwas länger Dauern
