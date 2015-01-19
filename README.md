@@ -1,5 +1,4 @@
-# infovis<br>
-Informationsvisualisierung mit PubDB LMU<br>
+# Informationsvisualisierung mit PubDB der LMU<br>
 
 Unter /setup muss eine "config.ini" abgelegt werden:<br>
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
