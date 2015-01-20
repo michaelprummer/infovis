@@ -97,12 +97,12 @@ Parser = function(opts){
          ***************************/
         } else {
             var paper_id = options['paper'];
-
+            alert(paper_id)
             $.ajax({
                 url: "loadPapers.php",
                 type: "post",
                 data: {
-                    'id' : paper_id
+                    'title' : paper_id
                 },
                 dataType:'json',
                 beforeSend: function(){

@@ -168,7 +168,7 @@ Layouter = function(opts){
             })
             .on("click",function(ev){
                 $("#nav").tabs("option","active",1);
-                var id = d3.select(this).attr("paper_id");
+                var id = d3.select(this).attr("title");
                 $("#paper").val(id);
                 var opts = {paper:id}
                 that.parser.callApi(opts);
