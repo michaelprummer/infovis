@@ -105,12 +105,11 @@ Parser = function(opts){
          ***************************/
         } else {
             var paper_id = options['paper'];
-
             $.ajax({
                 url: "loadPapers.php",
                 type: "post",
                 data: {
-                    'id' : encode_utf8(paper_title)
+                    'title' : encode_utf8(paper_id)
                 },
                 dataType:'json',
                 beforeSend: function(){

@@ -137,6 +137,10 @@ input{
     float: left;
 }
 
+.paper {
+    cursor:pointer;
+}
+
 .paper-details-authorname{
     fill: #009845;
     cursor:pointer;
