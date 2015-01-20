@@ -165,6 +165,13 @@ Layouter = function(opts){
                         d3.select(this.parentNode).select(".name").transition().style("opacity",.2)
                     })
                 }
+            })
+            .on("click",function(ev){
+                $("#nav").tabs("option","active",1);
+                var id = d3.select(this).attr("paper_id");
+                $("#paper").val(id);
+                var opts = {paper:id}
+                that.parser.callApi(opts);
             });
 
         return bubble;

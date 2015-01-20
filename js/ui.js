@@ -26,7 +26,7 @@ $(document).ready(function(){
     });
 
     $("button").button();
-    $('#nav').tabs();
+    var tabs = $('#nav').tabs();
     $("svg").bind("DOMMouseScroll",function(ev){
 
     });
@@ -161,12 +161,5 @@ $(document).ready(function(){
         parser.callApi(options);
     }
 
-    function getActiveTab(){
-        if($("#tabs-1").attr("aria-hidden") == "false") {
-            return 1;
-        } else {
-            return 2;
-        }
-    }
 
 })

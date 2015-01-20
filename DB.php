@@ -185,6 +185,7 @@ class DB {
                     $keywords = (isset($row['keywords']))?($row['keywords']):("");
                     $details = (isset($row['details']))?($row['details']):("");
 
+
                     $a_json_row["id"] = $id;
                     $a_json_row["year"] = $year;
                     $a_json_row["title"] = $title;
@@ -192,6 +193,15 @@ class DB {
                     $a_json_row["details"] = $details;
                     $a_json_row["bib"] = $bib;
                 }
+            }
+            $authordata = $this->db->query("SELECT * FROM authors_papers WHERE id = $id");
+            if($authordata){
+                 $authors = [];
+                while($row = mysqli_fetch_array($authordata)) {
+                    $author = (isset($row['search_name']))?($row['search_name']):("");
+                    array_push($authors,$author);
+                }
+                $a_json_row["authors"] = $authors;
             }
             return $a_json_row;
         }

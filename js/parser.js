@@ -33,7 +33,7 @@ Parser = function(opts){
         /****************************
          *      Author View         *
          ***************************/
-        if(getActiveTab() == 1) {
+        if(getActiveTab() == 0) {
             var ret = [];
             var url = "apiCallLMU.php";
 
@@ -72,7 +72,7 @@ Parser = function(opts){
                             //console.log(data);
 
                             for (var i = 0; i < data[0].elements[0].authors.length; i++) {
-                                if (re.test(data[0].elements[0].authors[i].toLowerCase())) {
+                                if (re.test(data[0].elements[0].authors[i].split(" ").join("").toLowerCase())) {
                                     realAuthorname = data[0].elements[0].authors[i];
                                     //console.log(author + " matches " + realAuthorname);
                                     var options = {papers: data, author: realAuthorname, svg: that.svg};
@@ -140,6 +140,28 @@ Parser = function(opts){
                             .style("fill","#444444")
                             .style("font-size", 20);
 
+                    var authorlabel = d3.select("#viewport").append("text")
+                        .text("Authors: ")
+                        .attr("dx", 50)
+                        .attr("dy", 200)
+                        .attr("class","paper-details")
+                        .style("fill","#444444")
+                        .style("font-size", 20);
+
+                    var keywords = d3.select("#viewport").selectAll("text.paper-details-authorname").data(data.authors).enter().append("text")
+                        .text(function(d,i){return d;})
+                        .attr("dx", function(d,i){return i*100+50;})
+                        .attr("dy", 225)
+                        .attr("class","paper-details-authorname")
+                        .on("click",function(){
+                            setActiveTab(0);
+                            $("#name").val(this.textContent);
+                            var opts = {name:this.textContent};
+                            that.callApi(opts);
+
+                        })
+                        .style("font-size", 20);
+
 
                     var json_start = data.bib.indexOf("{");
                     var bib_json = data.bib.substr(json_start, data.bib.length).replace("]","")
@@ -147,7 +169,7 @@ Parser = function(opts){
                     var keywords = d3.select("#viewport").append("text")
                             .text(bib_json)
                             .attr("dx", 50)
-                            .attr("dy", 200)
+                            .attr("dy", 275)
                             .attr("class","paper-details")
                             .style("fill","#444444")
                             .style("font-size", 20);
@@ -163,12 +185,18 @@ Parser = function(opts){
         }
 
         function getActiveTab(){
-            if($("#tabs-1").attr("aria-hidden") == "false") {
-                return 1;
-            } else {
-                return 2;
-            }
+            /**if($("#tabs-1").attr("aria-hidden") == "false") {
+            return 1;
+        } else {
+            return 2;
+        }**/
+            return $("#nav").tabs("option","active");
         }
+
+        function setActiveTab(id){
+            $('#nav').tabs("option","active",id);
+        }
+
     }
 
     Parser.prototype.setLayouter = function(layouter){

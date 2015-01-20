@@ -136,3 +136,8 @@ input{
 #loadingOverlay{
     float: left;
 }
+
+.paper-details-authorname{
+    fill: #009845;
+    cursor:pointer;
+}
