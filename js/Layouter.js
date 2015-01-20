@@ -186,7 +186,7 @@ Layouter = function(opts){
         bubble.bubble.on("click",function(ev){
             var name = bubble.authorname.split(" ");
             var searchName = name[name.length-1];
-            $("#name").val(bubble.authorname);
+            $("#name").val(searchName);
 
            that.parser.callApi({name:searchName});
         });
