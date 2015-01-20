@@ -176,7 +176,7 @@ class DB {
 
     public function getPaper($title) {
         $a_json_row = array();
-        $data = $this->db->query("SELECT * FROM papers WHERE title LIKE '%$title%'");
+        $data = $this->db->query("SELECT * FROM papers WHERE title LIKE '%$title%' LIMIT 1");
         $id = 0;
 
         if($data){
