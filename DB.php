@@ -162,10 +162,11 @@ class DB {
     public function getAutoSearchPaper($term){
         $a_json = array();
         $data = $this->db->query("SELECT * FROM papers WHERE title LIKE '%$term%' LIMIT 25");
+
         if($data){
             while($row = mysqli_fetch_array($data)) {
                 $title = (isset($row['title']))?($row['title']):("");
-                $a_json_row["value"] = $row['id'];
+                $a_json_row["value"] = $title;
                 $a_json_row["label"] = $title;
                 array_push($a_json, $a_json_row);
             }
@@ -173,18 +174,17 @@ class DB {
         return $a_json;
     }
 
-    public function getPaper($id) {
-        if(is_numeric($id)) {
+    public function getPaper($title) {
             $a_json_row = array();
-            $data = $this->db->query("SELECT * FROM papers WHERE id = $id");
+            $data = $this->db->query("SELECT * FROM papers WHERE title LIKE '%$title%'");
             if($data){
                 while($row = mysqli_fetch_array($data)) {
+                    $id = $row['id'];
                     $title = (isset($row['title']))?($row['title']):("");
                     $bib = (isset($row['bib']))?($row['bib']):("");
                     $year = (isset($row['year']))?($row['year']):("");
                     $keywords = (isset($row['keywords']))?($row['keywords']):("");
                     $details = (isset($row['details']))?($row['details']):("");
-
 
                     $a_json_row["id"] = $id;
                     $a_json_row["year"] = $year;
@@ -205,6 +205,5 @@ class DB {
             }
             return $a_json_row;
         }
-    }
 }
 ?>
