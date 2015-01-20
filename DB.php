@@ -17,6 +17,7 @@ class DB {
     function connect(){
         $config = parse_ini_file("setup/config.ini", TRUE);
         $this->db = new mysqli($config["database"]["host"], $config["database"]["user"], $config["database"]["password"]);
+        mysqli_report(MYSQLI_REPORT_ERROR);
 
         if ($this->db->connect_errno) {
             die("Failed to connect to MySQL: (" . $this->db->connect_errno . ") " . $this->db->connect_error);
@@ -32,12 +33,10 @@ class DB {
             mysqli_select_db($this->db, 'infoVis');
         }
 
-        echo "Clearing tables...<br>";
         $this->db->query("DROP Table authors");
         $this->db->query("DROP Table papers");
         $this->db->query("DROP Table authors_papers");
         $this->db->query("DROP Table extern_dblp");
-        echo "Rebuilding tables...<br>";
 
         $this->db->query("CREATE TABLE IF NOT EXISTS authors(
                              lastname VARCHAR(127) NOT NULL,
@@ -71,49 +70,69 @@ class DB {
         $this->loadData();
     }
 
+    function clean($string) {
+        $string = str_replace(' ', '-', $string);
+        $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+        $string = preg_replace('/-+/', '-', $string);
+
+        return str_replace('-', ' ', $string);
+    }
+
     function loadData(){
-        echo "Crawling LMU data...<br>";
+        echo "Crawling data, please wait.<br>";
         $data = $this->loader ->getRAW();
-        print_r($data);
+        //print_r($data);
 
         foreach($data as $val){
             $year = $val["year"];
             $elements = $val["elements"];
 
             foreach($elements as $ele){
-                $title = $ele['title'];
-                $details = $ele['details'];
-                $bib_link = (isset($ele['bib_link']))? ($ele['bib_link']) : ("");
-                $keywords = (isset($ele['keywords']))? ($ele['keywords']) : ("");
-                if(isset($ele['keywords']))
-                    echo "keywords: " . $ele['keywords'];
+                $title =  (isset($ele['title']))? ($this->clean($ele['title'])) : ("");
+                $details = (isset($ele['details']))? ($this->clean($ele['details'])) : ("");
+                $bib_link = (isset($ele['bib_link']))? ($this->clean($ele['bib_link'])) : ("");
+                $keywords = (isset($ele['keywords']))? ($this->clean($ele['keywords'])) : ("");
+                //if(isset($ele['keywords']))
+                    //echo "keywords: " . $ele['keywords'];
 
-                $this->db->query("INSERT IGNORE INTO `papers`(`title`, `year`, `bib`, `keywords`, `details`) VALUES ('$title', '$year', '$bib_link', '$keywords', '$details')");
+                $this->db->query("INSERT INTO `papers`(`title`, `year`, `bib`, `keywords`, `details`) VALUES ('$title', '$year', '$bib_link', '$keywords', '$details')");
 
                 $id = mysqli_fetch_array($this->db->query("SELECT id FROM papers ORDER BY id DESC LIMIT 1"))[0];
 
                 foreach($ele["authors"] as $author) {
                     $author = explode(" ", $author);
 
+                    $error1 = null;
+                    $error2 = null;
+
                     if(count($author) == 1) {
-                        $name = $author[0];
-                        $this->db->query("INSERT IGNORE INTO `authors` (`lastname`, `firstname`, `search_name`) VALUES ('$name', '$name', '$name')");
-                        $this->db->query("INSERT IGNORE INTO `authors_papers` (`id`, `search_name`) VALUES ('$id', '$name')");
+                        $name = $this->clean($author[0]);
+                        $error1 = $this->db->query("INSERT IGNORE INTO authors (lastname, firstname, search_name) VALUES ('$name', '$name', '$name')");
+                        $error2 = $this->db->query("INSERT IGNORE INTO authors_papers (id, search_name) VALUES ('$id', '$name')");
 
                     } elseif(count($author) == 2){
-                        $search_name = strtolower($author[1]);
-                        $lastname = $author[1];
-                        $firstname = $author[0];
-                        $this->db->query("INSERT IGNORE INTO `authors` (`lastname`, `firstname`, `search_name`) VALUES ('$lastname', '$firstname', '$search_name')");
-                        $this->db->query("INSERT IGNORE INTO `authors_papers` (`id`, `search_name`) VALUES ('$id', '$search_name')");
+                        $search_name = strtolower($this->clean($author[1]));
+                        $lastname = $this->clean($author[1]);
+                        $firstname = $this->clean($author[0]);
+                        $error1 = $this->db->query("INSERT IGNORE INTO authors (lastname, firstname, search_name) VALUES ('$lastname', '$firstname', '$search_name')");
+                        $error2 = $this->db->query("INSERT IGNORE INTO authors_papers (id, search_name) VALUES ('$id', '$search_name')");
 
                     } else {
-                        $lastname = ($author[1] == "von")? ($author[2]) : ($author[1] . $author[2]);
+                        $lastname = ($author[1] == "von")? ($this->clean($author[2])) : ($this->clean($author[1]) . $this->clean($author[2]));
                         $search_name = strtolower($lastname);
-                        $firstname = $author[0];
-                        $this->db->query("INSERT IGNORE INTO `authors` (`lastname`, `firstname`, `search_name`) VALUES ('$lastname', '$firstname', '$search_name')");
-                        $this->db->query("INSERT IGNORE INTO `authors_papers` (`id`, `search_name`) VALUES ('$id', '$search_name')");
+                        $firstname = $this->clean($author[0]);
+                        $error1 = $this->db->query("INSERT IGNORE INTO authors (lastname, firstname, search_name) VALUES ('$lastname', '$firstname', '$search_name')");
+                        $error2 = $this->db->query("INSERT IGNORE INTO authors_papers (id, search_name) VALUES ('$id', '$search_name')");
                     }
+
+                    if(!$error1) {
+                        print_r($error1);
+                    }
+
+                    if(!$error2) {
+                        print_r($error2);
+                    }
+
                 }
             }
         }
@@ -136,7 +155,6 @@ class DB {
                     $result = $xml = simplexml_load_string($result);
                     $json = json_encode($xml);
 
-                    echo $json;
                     $this->db->query("INSERT IGNORE INTO extern_dblp (search_name, content) VALUES ('$search_name', '$json')");
                 }
             }
@@ -160,8 +178,9 @@ class DB {
     }
 
     public function getAutoSearchPaper($term){
+        $term = $this->clean($term);
         $a_json = array();
-        $data = $this->db->query("SELECT * FROM papers WHERE title LIKE '%$term%' LIMIT 25");
+        $data = $this->db->query("SELECT * FROM papers WHERE title LIKE '%$term%' LIMIT 50");
 
         if($data){
             while($row = mysqli_fetch_array($data)) {
@@ -176,6 +195,7 @@ class DB {
 
     public function getPaper($title) {
         $a_json_row = array();
+        $title = $this->clean($title);
         $data = $this->db->query("SELECT * FROM papers WHERE title LIKE '%$title%' LIMIT 1");
         $id = 0;
 

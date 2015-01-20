@@ -171,7 +171,8 @@ Layouter = function(opts){
                 $("#nav").tabs("option","active",1);
                 var title = d.title;
                 $("#paper").val(title);
-                var opts = {paper:title}
+                var opts = {paper:title, view:"paperView"}
+
                 that.parser.callApi(opts);
             });
 

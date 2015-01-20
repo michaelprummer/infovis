@@ -231,6 +231,7 @@ AuthorBubble = function(options){
             .data(that.paperTitles)
             .enter().append("g")
             .attr("title", function(d,i){
+                //return (d.title.toString()+" "+ d.year.toString());
                 return (d.title.toString()+" "+ d.year.toString());
             })
             .attr("transform", function(d, i) {

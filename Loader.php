@@ -46,7 +46,6 @@ class Loader
                 // YEAR BLOCK
                 if (strpos($val, "year_separator") !== false) {
                     $val = utf8_encode(strip_tags($val));
-
                     if ($this->content_mode == self::CONTENTMODE_HTML) {
                         if ($block_counter > 0)
                             echo "</div>";

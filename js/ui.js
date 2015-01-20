@@ -46,8 +46,10 @@ $(document).ready(function(){
         },
         stop: function(event, ui) {
             var options = {};
-            options["name"] = $('#name').val();
+            var name = $('#name').val() != "" ? $('#name').val() : "Hussmann";
+            options["name"] = name;
             options["paper"] = $('#paper').val();
+
             parser.callApi(options);
         }
     });
@@ -156,7 +158,14 @@ $(document).ready(function(){
 
     function loadContent(){
         var options = {};
-        options["name"] = $('#name').val();
+        var name = $('#name').val();
+
+        if(name != ""){
+            options["name"] = name;
+        } else {
+            options["name"] = "Hussmann";
+        }
+
         options["paper"] = $('#paper').val();
         parser.callApi(options);
     }

@@ -40,7 +40,7 @@ Parser = function(opts){
         /****************************
          *      Author View         *
          ***************************/
-        if(getActiveTab() == 0) {
+        if(getActiveTab() == 0 && options['view'] != "paperView") {
             var ret = [];
             var url = "apiCallLMU.php";
 
@@ -104,12 +104,12 @@ Parser = function(opts){
          *         Paper View       *
          ***************************/
         } else {
-            var paper_id = options['paper'];
+            var paper_title = options['paper'];
             $.ajax({
                 url: "loadPapers.php",
                 type: "post",
                 data: {
-                    'title' : encode_utf8(paper_id)
+                    'title' : paper_title
                 },
                 dataType:'json',
                 beforeSend: function(){
@@ -169,22 +169,18 @@ Parser = function(opts){
                         })
                         .style("font-size", 20);
 
+                    if(bib_json != "" && bib_json != null){
+                        var json_start = data.bib.indexOf("{");
+                        var bib_json = data.bib.substr(json_start, data.bib.length).replace("]","")
 
-                    var json_start = data.bib.indexOf("{");
-                    var bib_json = data.bib.substr(json_start, data.bib.length).replace("]","")
-
-                    var keywords = d3.select("#viewport").append("text")
+                        var keywords = d3.select("#viewport").append("text")
                             .text(bib_json)
                             .attr("dx", 50)
                             .attr("dy", 275)
                             .attr("class","paper-details")
                             .style("fill","#444444")
                             .style("font-size", 20);
-
-
-
-
-
+                    }
                 }
 
             })
