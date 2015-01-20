@@ -19,7 +19,7 @@
             url: "SetupPubDB.php"
         }).done(function(d){
             $("#output").html("PubDB DONE")
-            //dbpl();
+            dbpl();
         })
     }
 
