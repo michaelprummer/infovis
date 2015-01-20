@@ -100,7 +100,7 @@ AuthorBubble = function(options){
         ret = [];
         for (var i = 0; i < this.papers.length; i++) {
             for (var j = 0; j < this.papers[i].elements.length; j++) {
-                ret.push({title: this.papers[i].elements[j].title, id: this.papers[i].elements[j].paper_index});
+                ret.push({title: this.papers[i].elements[j].title, id: this.papers[i].elements[j].paper_index,year:this.papers[i].year});
             }
         }
         return ret;
@@ -131,7 +131,7 @@ AuthorBubble = function(options){
         .attr("id",this.authorname);
         if(this.root){
             namebadge.on("click",function(){
-                that.showDetails();
+                //that.showDetails();
             });
         } else {
             namebadge.on("mouseover",function(ev){
@@ -193,7 +193,7 @@ AuthorBubble = function(options){
            .innerRadius(this.innerRadius)
            .outerRadius(this.outerRadius);
 
-        var pie = d3.layout.pie().value(function(d){return d;});
+        var pie = d3.layout.pie().value(function(d){return d;}).sort(null);
 
         //Set up groups
             var arcs = this.activityPie.selectAll("g.activityArc")
@@ -231,7 +231,7 @@ AuthorBubble = function(options){
             .data(that.paperTitles)
             .enter().append("g")
             .attr("title", function(d,i){
-                return that.paperTitles[i].title.toString();
+                return (d.title.toString()+" "+ d.year.toString());
             })
             .attr("transform", function(d, i) {
                 var angle = (360/that.paperTitles.length)*i-85;

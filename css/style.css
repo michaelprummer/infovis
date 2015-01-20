@@ -141,3 +141,7 @@ input{
     fill: #009845;
     cursor:pointer;
 }
+
+.paper{
+    cursor:pointer;
+}

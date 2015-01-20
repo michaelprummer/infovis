@@ -25,6 +25,13 @@ Parser = function(opts){
     Parser.prototype.getConferences= function (name){}
     Parser.prototype.filter= function (json,key){}*/
 
+    function encode_utf8( s ) {
+        return unescape( encodeURIComponent( s ) );
+    }
+
+    function decode_utf8( s ) {
+        return decodeURIComponent( escape( s ) );
+    }
     Parser.prototype.callApi= function (options){
         //console.log("call api with: ");
         //console.log(options);
@@ -72,7 +79,8 @@ Parser = function(opts){
                             //console.log(data);
 
                             for (var i = 0; i < data[0].elements[0].authors.length; i++) {
-                                if (re.test(data[0].elements[0].authors[i].split(" ").join("").toLowerCase())) {
+                                var lowername = data[0].elements[0].authors[i].split(" ").join("").toLowerCase();
+                                if (re.test(lowername)) {
                                     realAuthorname = data[0].elements[0].authors[i];
                                     //console.log(author + " matches " + realAuthorname);
                                     var options = {papers: data, author: realAuthorname, svg: that.svg};
@@ -102,7 +110,7 @@ Parser = function(opts){
                 url: "loadPapers.php",
                 type: "post",
                 data: {
-                    'id' : paper_id
+                    'id' : encode_utf8(paper_title)
                 },
                 dataType:'json',
                 beforeSend: function(){

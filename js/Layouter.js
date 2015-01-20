@@ -136,6 +136,7 @@ Layouter = function(opts){
                     g.append("path")
                         .attr("d", lineFunction(lineData))
                         .style("stroke", "#4A4A4A")
+                        .style("fill","transparent")
                         .attr("paperid", paperid);
                 }
             }
@@ -166,11 +167,11 @@ Layouter = function(opts){
                     })
                 }
             })
-            .on("click",function(ev){
+            .on("click",function(d,i){
                 $("#nav").tabs("option","active",1);
-                var id = d3.select(this).attr("paper_id");
-                $("#paper").val(id);
-                var opts = {paper:id}
+                var title = d.title;
+                $("#paper").val(title);
+                var opts = {paper_title:title}
                 that.parser.callApi(opts);
             });
 
@@ -185,8 +186,7 @@ Layouter = function(opts){
         bubble.bubble.on("click",function(ev){
             var name = bubble.authorname.split(" ");
             var searchName = name[name.length-1];
-            $("#name").html(bubble.authorname);
-            $("#name").attr("value", searchName);
+            $("#name").val(bubble.authorname);
 
            that.parser.callApi({name:searchName});
         });
